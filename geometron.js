@@ -187,8 +187,128 @@ function geometronAction(ctx, gvm){
             gvm.svgString += "\" r = \"" + ctx.lineWidth.toString() + "\" stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" ";
             gvm.svgString += "fill = \"" + ctx.strokeStyle + "\" />\n";	    
             break;
-            
-            
+        case 0341:
+            ctx.beginPath();
+            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.stroke();   
+            gvm.svgString += "<circle cx=\"";
+            gvm.svgString += Math.round(gvm.cursor.x).toString();
+            gvm.svgString += "\" cy = \"";
+            gvm.svgString += Math.round(gvm.cursor.y).toString();
+            gvm.svgString += "\" r = \"" + gvm.cursor.r.toString() + "\" stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" ";
+            gvm.svgString += "fill = \"none\" />\n";		
+            break;
+        case 0342:
+            ctx.beginPath();
+            ctx.moveTo(gvm.cursor.x,gvm.cursor.y);
+            ctx.lineTo(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta),gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta));
+            ctx.stroke();		
+            ctx.closePath();    
+            let x2 = Math.round(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta));
+            let y2 = Math.round(gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta));
+            gvm.svgString += "    <line x1=\""+Math.round(gvm.cursor.x).toString()+"\" y1=\""+Math.round(gvm.cursor.y).toString()+"\" x2=\"" + x2.toString()+"\" y2=\"" + y2.toString()+"\" style=\"stroke:" + ctx.strokeStyle + ";stroke-width:" + (ctx.lineWidth).toString() + "\" />\n";
+            break;
+        case 0343:
+            ctx.beginPath();
+            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, gvm.cursor.theta - gvm.cursor.thetaStep,gvm.cursor.theta + gvm.cursor.thetaStep);
+            ctx.stroke();
+            ctx.closePath();
+            let localString = "";
+            localString += "  <path d=\"";	
+            localString += "M";
+            let localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            localString += " ";
+            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            gvm.svgString += localString;
+            localString = "           A" + gvm.cursor.r.toString() + " " + gvm.cursor.r.toString() + " 0 0 1 ";
+            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
+            localString += localInt.toString() + " ";
+            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);
+            localString += localInt.toString() + "\" fill = \"none\" stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" />\n";
+            gvm.svgString += localString;
+            break;
+        case 0344:
+            //line segment as part of path
+            ctx.lineTo(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta),gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta));
+            ctx.stroke();		
+            let x2 = Math.round(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta));
+            let y2 = Math.round(gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta));
+            gvm.svgString += "L" + x2 + " " + y2 + " ";            
+            break;
+        case 0345:
+            //arc as part of path, to the right (CW)
+            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, gvm.cursor.theta - gvm.cursor.thetaStep,gvm.cursor.theta + gvm.cursor.thetaStep);
+            ctx.stroke();
+            let localString = "";
+            localString += "M";
+            let localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            localString += " ";
+            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            gvm.svgString += localString;
+            localString = "           A" + gvm.cursor.r.toString() + " " + gvm.cursor.r.toString() + " 0 0 1 ";
+            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
+            localString += localInt.toString() + " ";
+            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            gvm.svgString += localString;            
+            break;
+        case 0346:
+            //arc, reverse direction (CCW)
+            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, gvm.cursor.theta + gvm.cursor.thetaStep,gvm.cursor.theta - gvm.cursor.thetaStep,true);
+            ctx.stroke();   
+            localString = "";
+            localString += "M";
+            let localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            localString += " ";
+            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            gvm.svgString += localString;
+            localString = "           A" + gvm.cursor.r.toString() + " " + gvm.cursor.r.toString() + " 0 0 1 ";
+            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
+            localString += localInt.toString() + " ";
+            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);
+            localString += localInt.toString();
+            gvm.svgString += localString;
+            break;
+        case 0347:
+            //filled circle
+            ctx.beginPath();
+            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+            gvm.svgString += "    <circle cx=\"";
+            gvm.svgString += Math.round(gvm.cursor.x).toString();
+            gvm.svgString += "\" cy = \"";
+            gvm.svgString += Math.round(gvm.cursor.y).toString();
+            gvm.svgString += "\" r = \"" + gvm.cursor.r.toString() + "\" stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" ";
+            gvm.svgString += "fill = \"" + ctx.fillStyle + "\" />\n";
+            break;
+        case 0350:
+            gvm.cursor.thetaStep /= 2;  //angle/2
+            break;
+        case 0351:
+            gvm.cursor.thetaStep *= 2;  //angle/2
+            break;
+        case 0352:
+            gvm.cursor.thetaStep /= 3;  //angle/2
+            break;
+        case 0353:
+            gvm.cursor.thetaStep *= 3;  //angle/2
+            break;
+        case 0354:
+            //end a closed but not filled path
+            ctx.closePath();
+            ctx.stroke();		
+            gvm.svgString += "Z\""+ " stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" fill = \"" + "none" + "\" "+"/>";
+            break;
+
             
     }
 }
