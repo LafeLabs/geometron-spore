@@ -3,7 +3,7 @@ class GVM {       //Geometron Virtual Machine
     this.action = 0o177;
     this.hypercube = [];
     for(let index = 0; index < 1024; index++){
-        this.hypercube.push(0o177);
+        this.hypercube.push([0o177]);
     }
     this.glyph = [];
     this.svgString = "";
@@ -67,23 +67,21 @@ function drawGlyph(canvas, gvm){
     
     // Draw glyph actions using explicit index loop
     for(let index = 0; index < gvm.glyph.length; index++){
-        gvm.action = gvm.glyph[index];
-        geometronAction(ctx, gvm);
+        geometronAction(ctx, gvm,gvm.glyph[index]);
     }
     
     gvm.svgString += "</svg>";    
 }
 
 
-function geometronAction(ctx, gvm){
+function geometronAction(ctx, gvm,action){
     let x2, y2, localString, localInt, pathX2, pathY2; 
-    switch (gvm.action) {
-        case (gvm.action >= 0o200 && gvm.action <= 0o277):
-            for(let index = 0;index < gvm.hypercube[gvm.action].length;index++){
-                geometronAction(ctx, gvm);
-            }
-        // Triggers for any opcode between 0o400 and 0o477
-        break;        
+    if(action >= 0o200 && action <= 0o277){
+        for(let index = 0;index < gvm.hypercube[action].length;index++){
+            geometronAction(ctx, gvm,gvm.hypercube[action][index]);
+        }
+    }
+    switch (action) {
         case 0o300:
             gvm.cursor.x = gvm.canvas.x0;
             gvm.cursor.y = gvm.canvas.y0;
