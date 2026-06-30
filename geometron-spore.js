@@ -95,17 +95,28 @@ function mouseWheel(event) {
 
 function keyPressed() {
     let asciiValue = key.charCodeAt(0);
-    let oldGlyph = mainGVM.glyph;
-    mainGVM.glyph = [];
-    for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
-        if(oldGlyph[glyphIndex] != 0o207){
-            mainGVM.glyph.push(oldGlyph[glyphIndex]);
+    if(asciiValue >= 0o40 && asciiValue < 0o177){
+        let oldGlyph = mainGVM.glyph;
+        mainGVM.glyph = [];
+        for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+            if(oldGlyph[glyphIndex] != 0o207){
+                mainGVM.glyph.push(oldGlyph[glyphIndex]);
+            }
         }
+        mainGVM.glyph.push(mainGVM.hypercube[asciiValue][0]);
+        mainGVM.glyph.push(0o207);
+        drawGlyph(geometronCanvas, mainGVM);        
     }
-    mainGVM.glyph.push(mainGVM.hypercube[asciiValue][0]);
-    mainGVM.glyph.push(0o207);
-    drawGlyph(geometronCanvas, mainGVM);
-    console.log(asciiValue.toString(8));
+    
+    if (keyCode === BACKSPACE) {
+        mainGVM.glyph.pop();
+        mainGVM.glyph.pop();
+        mainGVM.glyph.pop();
+        mainGVM.glyph.push(0o207);
+        drawGlyph(geometronCanvas, mainGVM);        
+    
+    }
+
 }
 
 function mouseClicked() {
