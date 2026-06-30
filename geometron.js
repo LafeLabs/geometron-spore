@@ -67,7 +67,6 @@ function drawGlyph(canvas, gvm){
     gvm.word = "";
     gvm.cursorStack = [];
     
-    
     gvm.svgString = "<svg width=\"" + gvm.canvas.width.toString() + "\" height=\"" + gvm.canvas.height.toString() + "\" viewbox = \"0 0 " + gvm.canvas.width.toString() + " " + gvm.canvas.height.toString() + "\"  xmlns=\"http://www.w3.org/2000/svg\">\n";
     ctx = canvas.getContext("2d");
     canvas.width = gvm.canvas.width;
