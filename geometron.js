@@ -349,6 +349,18 @@ function geometronAction(ctx, gvm,action){
 }
 
 
+function convertOldFormat(oldFormat){
+    let inputArray = oldFormat.split(",");//take in string in old format
+    let outputArray = [];
+    for(let index = 0;index < inputArray.length;index++){
+        if(inputArray[index].length > 1){
+            outputArray.push(parseInt(inputArray[index],8));
+        }
+    }
+    return outputArray;//return array of integers
+}
+
+
 hypercube0 = [
     [
         127

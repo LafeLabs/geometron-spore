@@ -13,6 +13,12 @@ $baseurl = explode("spore.php",$spore)[0];
 @copy($baseurl."spore.php","spore.php");//comment out to keep existing spore
 @copy($baseurl."wall.txt","wall.txt");//comment out to keep existing spore
 
+
+@copy($baseurl."geometron.js","geometron.js");
+@copy($baseurl."geometron-spore.html","geometron-spore.html");
+@copy($baseurl."geometron-spore.css","geometron-spore.css");
+@copy($baseurl."geometron-spore.js","geometron-spore.js");
+
 ?>
 <a href = "index.html">index.html</a>
 <style>
