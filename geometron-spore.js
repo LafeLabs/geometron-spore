@@ -94,30 +94,72 @@ function mouseWheel(event) {
 }
 
 function keyPressed() {
-    let asciiValue = key.charCodeAt(0);
-    if(asciiValue >= 0o40 && asciiValue < 0o177){
+    if (key.length === 1) {
+        actionKey = key.charCodeAt(0);
+    } else {
+        // Map special keys to unique integers below 32
+        if (keyCode === ENTER)     actionKey = 0o12; 
+        if (keyCode === BACKSPACE) actionKey = 0o10;  
+        if (keyCode === LEFT_ARROW)  actionKey = 0o20;  
+        if (keyCode === RIGHT_ARROW) actionKey = 0o21;  
+        if (keyCode === UP_ARROW)    actionKey = 0o22;  
+        if (keyCode === DOWN_ARROW)  actionKey = 0o23;  
+    }
+    
+    if(actionKey >= 0o40 && actionKey < 0o177){
         let oldGlyph = mainGVM.glyph;
         mainGVM.glyph = [];
         for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
             if(oldGlyph[glyphIndex] != 0o207){
                 mainGVM.glyph.push(oldGlyph[glyphIndex]);
+            } else{
+                mainGVM.glyph.push();
+                mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
+                mainGVM.glyph.push(0o207);
             }
         }
-        mainGVM.glyph.push(mainGVM.hypercube[asciiValue][0]);
-        mainGVM.glyph.push(0o207);
         drawGlyph(geometronCanvas, mainGVM);        
     }
-    
-    if (keyCode === BACKSPACE) {
-        mainGVM.glyph.pop();
-        mainGVM.glyph.pop();
-        mainGVM.glyph.pop();
-        mainGVM.glyph.push(0o207);
+    if (actionKey === 0o10) {
+        let oldGlyph = mainGVM.glyph;
+        mainGVM.glyph = [];
+        for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+            if(oldGlyph[glyphIndex] != 0o207){
+                mainGVM.glyph.push(oldGlyph[glyphIndex]);
+            } else{
+                mainGVM.glyph.pop();
+                mainGVM.glyph.push(0o207);
+            }
+        }
         drawGlyph(geometronCanvas, mainGVM);        
-    
+    }
+    if (actionKey === 0o20) {
+        //left arrow, cursor back
+        let oldGlyph = mainGVM.glyph;
+        mainGVM.glyph = [];
+        for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+            if(oldGlyph[glyphIndex] != 0o207){
+                mainGVM.glyph.push(oldGlyph[glyphIndex]);
+            } else{
+                let prevElement = mainGVM.glyph.pop();
+                mainGVM.glyph.push(0o207);
+                mainGVM.glyph.push(prevElement);
+            }
+        }
+        drawGlyph(geometronCanvas, mainGVM);        
+    }
+    if (actionKey === 0o21) {
+        //right arrow, cursor forward
+    }
+    if (actionKey === 0o22) {
+        //up arrow, move up in hypercube
+    }
+    if (actionKey === 0o23) {
+        //down arrow,move down in hypercube
     }
 
 }
+
 
 function mouseClicked() {
 
