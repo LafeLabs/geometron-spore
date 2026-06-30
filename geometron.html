@@ -11,19 +11,43 @@
 </head>
 <body>
 <canvas id = "main-canvas"></canvas>
+<br>
+<input id = "geometron-input">
+<input id = "js-output">
+
 <style>
     #main-canvas{
         border:solid;
     }
 </style>
 <script>
+document.getElementById("geometron-input").value = "";
+document.getElementById("js-output").value = "";
+document.getElementById("geometron-input").onchange = function(){
+    inputArray = this.value.split(",");
+    outputArray = [];
+    for(let index = 0;index < inputArray.length;index++){
+        if(inputArray[index].length > 1){
+            outputArray.push(parseInt(inputArray[index],8));
+        }
+    }
+    mainGVM.glyph = outputArray;
+    drawGlyph(mainCanvas, mainGVM);
+    document.getElementById("js-output").value = JSON.stringify(outputArray);
+}
 
 mainCanvas = document.getElementById("main-canvas");
 let mainGVM = new GVM();
 mainGVM.hypercube= hypercube0;
-mainGVM.glyph = [0o300,0o336,0o332,0o337,0o322,0o341,0o333,0o326,0o341,0o300,0o336,0o200];
+mainGVM.canvas.width = 0.48*innerWidth;
+mainGVM.canvas.height = 0.48*innerWidth;
+mainGVM.canvas.x0 = 0.5*mainGVM.canvas.width;
+mainGVM.canvas.y0 = 0.5*mainGVM.canvas.height;
+mainGVM.canvas.unit = 0.25*mainGVM.canvas.width; 
+
+//mainGVM.glyph = [0o300,0o336,0o332,0o337,0o322,0o341,0o333,0o326,0o341,0o300,0o336,0o200];
 //mainGVM.glyph = [0o0200];
-mainGVM.canvas.unit =50; 
+mainGVM.glyph = [217,220,209,242,131,221,131,131,221,131,131,221,131,131,221,131,236,221,216,225,224];
 drawGlyph(mainCanvas, mainGVM);
 
 </script>

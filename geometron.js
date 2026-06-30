@@ -54,7 +54,20 @@ class GVM {       //Geometron Virtual Machine
   }
 }
 
+
 function drawGlyph(canvas, gvm){
+
+    gvm.cursor.x = gvm.canvas.x0;
+    gvm.cursor.y = gvm.canvas.y0;
+    gvm.cursor.r = gvm.canvas.unit;
+    gvm.cursor.theta = gvm.canvas.theta0;
+    gvm.cursor.scaleFactor = 2;
+    gvm.cursor.thetaStep = Math.PI/2;
+    gvm.svgString = "";
+    gvm.word = "";
+    gvm.cursorStack = [];
+    
+    
     gvm.svgString = "<svg width=\"" + gvm.canvas.width.toString() + "\" height=\"" + gvm.canvas.height.toString() + "\" viewbox = \"0 0 " + gvm.canvas.width.toString() + " " + gvm.canvas.height.toString() + "\"  xmlns=\"http://www.w3.org/2000/svg\">\n";
     ctx = canvas.getContext("2d");
     canvas.width = gvm.canvas.width;
@@ -76,7 +89,7 @@ function drawGlyph(canvas, gvm){
 
 function geometronAction(ctx, gvm,action){
     let x2, y2, localString, localInt, pathX2, pathY2; 
-    if(action >= 0o200 && action <= 0o277){
+    if((action >= 0o200 && action <= 0o277) || (action >= 0o1000 && action <= 0o1777) || (action >= 0o500 && action <= 0o677)){
         for(let index = 0;index < gvm.hypercube[action].length;index++){
             geometronAction(ctx, gvm,gvm.hypercube[action][index]);
         }
@@ -102,7 +115,7 @@ function geometronAction(ctx, gvm,action){
             gvm.cursor.thetaStep = 2*Math.PI/5;
             break;
         case 0o306:
-            gvm.cursor.thetaStep = 2*Math.PI/3;
+            gvm.cursor.thetaStep = 2*Math.PI/6;
             break;
         case 0o310:
             gvm.cursor.scaleFactor = Math.sqrt(2);
@@ -174,12 +187,12 @@ function geometronAction(ctx, gvm,action){
             gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta);    
             break;
         case 0o332:
-            gvm.cursor.x -= gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
-            gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);    
-            break;
-        case 0o333:
             gvm.cursor.x -= gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
             gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);    
+            break;
+        case 0o333:
+            gvm.cursor.x -= gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
+            gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);    
             break;
         case 0o334:
             gvm.cursor.theta -= gvm.cursor.thetaStep; // CCW
@@ -252,8 +265,7 @@ function geometronAction(ctx, gvm,action){
             // Line segment as part of path
             ctx.lineTo(gvm.cursor.x + gvm.cursor.r * Math.cos(gvm.cursor.theta), gvm.cursor.y + gvm.cursor.r * Math.sin(gvm.cursor.theta));
             ctx.stroke();		
-            
-            // Fixed: Changed from let x2/y2 to unique names pathX2/pathY2
+        
             pathX2 = Math.round(gvm.cursor.x + gvm.cursor.r * Math.cos(gvm.cursor.theta));
             pathY2 = Math.round(gvm.cursor.y + gvm.cursor.r * Math.sin(gvm.cursor.theta));
             
@@ -262,41 +274,9 @@ function geometronAction(ctx, gvm,action){
 
         case 0o345:
             //arc as part of path, to the right (CW)
-            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, gvm.cursor.theta - gvm.cursor.thetaStep,gvm.cursor.theta + gvm.cursor.thetaStep);
-            ctx.stroke();
-            localString = "";
-            localString += "M";
-            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
-            localString += localInt.toString();
-            localString += " ";
-            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);
-            localString += localInt.toString();
-            gvm.svgString += localString;
-            localString = "           A" + gvm.cursor.r.toString() + " " + gvm.cursor.r.toString() + " 0 0 1 ";
-            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
-            localString += localInt.toString() + " ";
-            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);
-            localString += localInt.toString();
-            gvm.svgString += localString;            
             break;
         case 0o346:
-            //arc, reverse direction (CCW)
-            ctx.arc(gvm.cursor.x, gvm.cursor.y, gvm.cursor.r, gvm.cursor.theta + gvm.cursor.thetaStep,gvm.cursor.theta - gvm.cursor.thetaStep,true);
-            ctx.stroke();   
-            localString = "";
-            localString += "M";
-            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
-            localString += localInt.toString();
-            localString += " ";
-            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);
-            localString += localInt.toString();
-            gvm.svgString += localString;
-            localString = "           A" + gvm.cursor.r.toString() + " " + gvm.cursor.r.toString() + " 0 0 1 ";
-            localInt = gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
-            localString += localInt.toString() + " ";
-            localInt = gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);
-            localString += localInt.toString();
-            gvm.svgString += localString;
+            //arc as part of path, reverse direction (CCW)
             break;
         case 0o347:
             //filled circle
@@ -333,16 +313,31 @@ function geometronAction(ctx, gvm,action){
 
         case 0o360:
             //first part of bezier in middle of a path
-            ctx.moveTo(Math.round(gvm.cursor.x),Math.round(gvm.cursor.y));
-            gvm.cpx1 = Math.round(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta));
-            gvm.cpy1 = Math.round(gvm.cursor.y + gvm.cursor.r*Math.sin(this.theta));
-            gvm.svgString += " M";
-            gvm.svgString += (Math.round(gvm.cursor.x)).toString() + ",";
-            gvm.svgString += (Math.round(gvm.cursor.y)).toString() + " C";
-            gvm.svgString += gvm.cpx1.toString() + "," + gvm.cpy1.toString() + " ";
             break;
-
-
+        case 0o361:
+            //end bezier path in a close path
+            break;
+        case 0o362:
+             //start a path
+            ctx.beginPath();
+            ctx.moveTo(gvm.cursor.x,gvm.cursor.y);
+            gvm.svgString += "	<path d = \"M";
+            gvm.svgString += Math.round(gvm.cursor.x).toString() + " ";
+            gvm.svgString += Math.round(gvm.cursor.y).toString() + " ";
+            break;
+        case 0o363:
+             //terminate a closed path with fill
+            ctx.closePath();
+            ctx.stroke();		
+            ctx.fill();		            
+            gvm.svgString += "Z\""+ " stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" fill = \"" + ctx.fillStyle + "\" "+"/>";
+            break;
+        case 0o364:
+            //terminate unfilled path
+            ctx.closePath();
+            gvm.svgString += "\""+ " stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" fill = \"" + "none" + "\" "+"/>";
+            break;
+            
         case 0o370:
             gvm.cursorStack.push({...gvm.cursor});
             break;
