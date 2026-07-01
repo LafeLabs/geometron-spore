@@ -2,9 +2,9 @@
 
 self-replicating geometron instance
 
+ - [geometron.html](geometron.html)
+ - [geometron.css](geometron.css)
  - [geometron.js](geometron.js)
- - [geometron-spore.html](geometron-spore.html)
- - [geometron-spore.css](geometron-spore.css)
- - [geometron-spore.js](geometron-spore.js)
+ - [geometron.json](geometron.json)
  - [sketch.js](sketch.js)
- - [geometron-spore.php](geometron-spore.php)
+ - [geometron.php](geometron.php)
