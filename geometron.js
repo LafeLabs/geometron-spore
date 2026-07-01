@@ -229,12 +229,12 @@ function geometronAction(ctx, gvm,action){
             gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta);    
             break;
         case 0o332:
-            gvm.cursor.x -= gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
-            gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);    
+            gvm.cursor.x += gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
+            gvm.cursor.y += gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);    
             break;
         case 0o333:
-            gvm.cursor.x -= gvm.cursor.r*Math.cos(gvm.cursor.theta - gvm.cursor.thetaStep);
-            gvm.cursor.y -= gvm.cursor.r*Math.sin(gvm.cursor.theta - gvm.cursor.thetaStep);    
+            gvm.cursor.x += gvm.cursor.r*Math.cos(gvm.cursor.theta + gvm.cursor.thetaStep);
+            gvm.cursor.y += gvm.cursor.r*Math.sin(gvm.cursor.theta + gvm.cursor.thetaStep);    
             break;
         case 0o334:
             gvm.cursor.theta -= gvm.cursor.thetaStep; // CCW

@@ -29,7 +29,7 @@ function setup() {
     mainGVM.canvas.y0 = 0.5 * mainGVM.canvas.height;
     mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
     mainGVM.style.line0 = 5; 
-    mainGVM.glyph = [0o341,0o332,0o341,0o207]; 
+    mainGVM.glyph = [0o341,0o306,0o332,0o341,0o207]; 
     drawGlyph(geometronCanvas, mainGVM);
     spellGVM = new GVM(); 
     spellGVM.hypercube = hypercube0; 
