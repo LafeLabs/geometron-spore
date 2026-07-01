@@ -2,13 +2,12 @@
 $spore = "https://raw.githubusercontent.com/LafeLabs/geometron-spore/refs/heads/main/geometron.php";
 $baseurl = explode("geometron.php",$spore)[0];
 
-@copy($baseurl."README.md","geometron.md");
-@copy($baseurl."geometron.js","geometron.js");
 @copy($baseurl."geometron.html","geometron.html");
 @copy($baseurl."geometron.css","geometron.css");
+@copy($baseurl."geometron.js","geometron.js");
 @copy($baseurl."geometron.json","geometron-spore.json");
-@copy($baseurl."geometron.py","geometron-spore.py");
 @copy($baseurl."sketch.js","sketch.js");
+@copy($baseurl."README.md","geometron.md");
 
 ?>
 <a href = "index.html">index.html</a>

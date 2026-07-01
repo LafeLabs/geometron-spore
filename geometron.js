@@ -1,7 +1,7 @@
 class GVM {       //Geometron Virtual Machine
   constructor() {
     this.action = 0o177;
-    this.address = 0o220;//top of the shape table
+    this.address = 0o220;
     this.geometronFontSize = 36;
     this.hypercube = [];
     for(let index = 0; index < 1024; index++){
@@ -79,7 +79,6 @@ function drawGlyph(canvas, gvm){
     ctx.strokeStyle = gvm.style.color0 || "black";
     ctx.lineWidth = gvm.style.line0 || 2;     
     
-    // Draw glyph actions using explicit index loop
     for(let index = 0; index < gvm.glyph.length; index++){
         geometronAction(ctx, gvm,gvm.glyph[index]);
     }
