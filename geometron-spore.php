@@ -6,6 +6,7 @@ $baseurl = explode("geometron-spore.php",$spore)[0];
 @copy($baseurl."geometron-spore.html","geometron-spore.html");
 @copy($baseurl."geometron-spore.css","geometron-spore.css");
 @copy($baseurl."geometron-spore.js","geometron-spore.js");
+@copy($baseurl."sketch.js","sketch.js");
 @copy($baseurl."geometron-spore.php","geometron-spore.php");
 
 ?>
