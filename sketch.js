@@ -2,7 +2,7 @@ brushstroke = [];
 thispoint = {};
 thispoint.x = 0;
 thispoint.y = 0;
-
+shapeTable = [];
 
 audioOn = false;
     
@@ -30,13 +30,40 @@ function setup() {
     mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
     mainGVM.style.line0 = 5; 
     mainGVM.glyph = [0o341,0o306,0o332,0o341,0o207]; 
-    drawGlyph(geometronCanvas, mainGVM);
+//    drawGlyph(geometronCanvas, mainGVM);
     spellGVM = new GVM(); 
     spellGVM.hypercube = hypercube0; 
     spellGVM.canvas.width = 0.48 * innerWidth; 
     spellGVM.canvas.height = 0.97 * innerHeight;
     spellGVM.glyph = mainGVM.glyph; 
-    spellGlyph(geometronSpellCanvas, spellGVM);
+  //  spellGlyph(geometronSpellCanvas, spellGVM);
+    geometronJSON = {};
+    fetch('load-file.php?filename=geometron.json')
+        .then(xhr => xhr.text())
+        .then(rawJSON => {
+            geometronJSON = JSON.parse(rawJSON);
+            shapes = geometronJSON.shapeTable;
+            symbols = geometronJSON.symbolTable;
+            for(let index = 0;index < shapes.length;index++){
+                mainGVM.hypercube[0o220 + index] = shapes[index];
+                spellGVM.hypercube[0o220 + index] = shapes[index];
+                mainGVM.hypercube[0o1220 + index] = symbols[index];
+                spellGVM.hypercube[0o1220 + index] = symbols[index];
+            }
+            mainGVM.glyph = mainGVM.hypercube[mainGVM.address];
+            spellGVM.glyph = mainGVM.glyph;
+            mainGVM.glyph =  mainGVM.glyph.filter(item => item !== 0o207);
+            spellGVM.glyph =  spellGVM.glyph.filter(item => item !== 0o207);
+            mainGVM.glyph.push(0o207);
+            spellGVM.glyph.push(0o207);
+            drawGlyph(geometronCanvas, mainGVM);
+            spellGlyph(geometronSpellCanvas, spellGVM);
+            ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
+            ctx.font = '16px Arial';
+            ctx.fillText("0" + mainGVM.address.toString(8) + ":",10,20);
+            
+
+        });
 
 }
 
@@ -172,7 +199,9 @@ function keyPressed() {
     if (actionKey === 0o23) {
         //down arrow,move down in hypercube
     }
-
+            ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
+            ctx.font = '16px Arial';
+            ctx.fillText("0" + mainGVM.address.toString(8) + ":",10,25);
 }
 
 
