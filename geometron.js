@@ -131,6 +131,86 @@ function spellGlyph(canvas, gvm){
     gvm.svgString += "</svg>";    
 }
 
+
+function rootMagic(gvm,action){
+    switch (action){
+        case 0o10:
+            let oldGlyph = gvm.glyph;
+            gvm.glyph = [];
+            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                if(oldGlyph[glyphIndex] != 0o207){
+                    gvm.glyph.push(oldGlyph[glyphIndex]);
+                } else{
+                    gvm.glyph.pop();
+                    gvm.glyph.push(0o207);
+                }
+            }
+            break;
+        case 0o20:
+            //0o20 left arrow, cursor back
+            if(gvm.glyph[0] == 0o207){
+                gvm.glyph = gvm.glyph.filter(cursorCode => cursorCode !== 0o207);
+                gvm.glyph.push(0o207);
+            } else{
+                let oldGlyph = gvm.glyph;
+                gvm.glyph = [];
+                for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                    if(oldGlyph[glyphIndex] != 0o207){
+                        gvm.glyph.push(oldGlyph[glyphIndex]);
+                    } else{
+                        let prevElement = gvm.glyph.pop();
+                        gvm.glyph.push(0o207);
+                        gvm.glyph.push(prevElement);
+                    }
+                }            
+            }
+            break;
+        case 0o21:
+            if(gvm.glyph.at(-1) == 0o207){
+                gvm.glyph = gvm.glyph.filter(cursorCode => cursorCode !== 0o207);
+                gvm.glyph.unshift(0o207);
+            } else{
+                let oldGlyph = gvm.glyph;
+                gvm.glyph = [];
+                for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                    if(oldGlyph[glyphIndex] != 0o207){
+                        gvm.glyph.push(oldGlyph[glyphIndex]);
+                    } else{
+                        let prevElement = gvm.glyph.pop();
+                        gvm.glyph.push(prevElement);
+                        gvm.glyph.push(oldGlyph[glyphIndex + 1]);
+                        gvm.glyph.push(0o207);
+                        glyphIndex++;
+                    }
+                }
+            }
+            break;
+        case 0o22:
+            //move up in hypercube address
+            if(gvm.address === 0o237){
+               gvm.address = 0o220; 
+            } else{
+                gvm.address++;
+            }
+    
+            gvm.glyph = gvm.hypercube[gvm.address];
+            gvm.glyph = gvm.glyph.filter(cursorCode => cursorCode !== 0o207);
+            gvm.glyph.push(0o207);
+            break;
+        case 0o23:
+            // move down in hypercube address
+            if(gvm.address === 0o220){
+               gvm.address = 0o237; 
+            } else{
+                gvm.address--;
+            }
+            gvm.glyph = gvm.hypercube[gvm.address];
+            gvm.glyph = gvm.glyph.filter(cursorCode => cursorCode !== 0o207);
+            gvm.glyph.push(0o207);
+            break;
+    }
+}
+
 function geometronAction(ctx, gvm,action){
     let x2, y2, localString, localInt, pathX2, pathY2; 
     if((action >= 0o200 && action <= 0o277) || (action >= 0o1000 && action <= 0o1777) || (action >= 0o500 && action <= 0o677)){
