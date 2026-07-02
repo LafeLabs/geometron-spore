@@ -1,3 +1,5 @@
+geometronJSON0  = {"spore":"https://raw.githubusercontent.com/LafeLabs/geometron-spore/refs/heads/main/geometron.php","shapeTable":[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]],"symbolTable":[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]};
+
 class GVM {       //Geometron Virtual Machine
   constructor() {
     this.action = 0o177;

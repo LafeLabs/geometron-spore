@@ -158,34 +158,45 @@ function keyPressed() {
     }
     if (actionKey === 0o20) {
         //left arrow, cursor back
-        let oldGlyph = mainGVM.glyph;
-        mainGVM.glyph = [];
-        for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
-            if(oldGlyph[glyphIndex] != 0o207){
-                mainGVM.glyph.push(oldGlyph[glyphIndex]);
-            } else{
-                let prevElement = mainGVM.glyph.pop();
-                mainGVM.glyph.push(0o207);
-                mainGVM.glyph.push(prevElement);
-            }
+        if(mainGVM.glyph[0] == 0o207){
+            mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+            mainGVM.glyph.push(0o207);
+        } else{
+            let oldGlyph = mainGVM.glyph;
+            mainGVM.glyph = [];
+            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                if(oldGlyph[glyphIndex] != 0o207){
+                    mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                } else{
+                    let prevElement = mainGVM.glyph.pop();
+                    mainGVM.glyph.push(0o207);
+                    mainGVM.glyph.push(prevElement);
+                }
+            }            
         }
+
         drawGlyph(geometronCanvas, mainGVM);        
         spellGVM.glyph = mainGVM.glyph; 
         spellGlyph(geometronSpellCanvas, spellGVM);
     }
     if (actionKey === 0o21) {
         //right arrow, cursor forward
-        let oldGlyph = mainGVM.glyph;
-        mainGVM.glyph = [];
-        for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
-            if(oldGlyph[glyphIndex] != 0o207){
-                mainGVM.glyph.push(oldGlyph[glyphIndex]);
-            } else{
-                let prevElement = mainGVM.glyph.pop();
-                mainGVM.glyph.push(prevElement);
-                mainGVM.glyph.push(oldGlyph[glyphIndex + 1]);
-                mainGVM.glyph.push(0o207);
-                glyphIndex++;
+        if(mainGVM.glyph.at(-1) == 0o207){
+            mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+            mainGVM.glyph.unshift(0o207);
+        } else{
+            let oldGlyph = mainGVM.glyph;
+            mainGVM.glyph = [];
+            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                if(oldGlyph[glyphIndex] != 0o207){
+                    mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                } else{
+                    let prevElement = mainGVM.glyph.pop();
+                    mainGVM.glyph.push(prevElement);
+                    mainGVM.glyph.push(oldGlyph[glyphIndex + 1]);
+                    mainGVM.glyph.push(0o207);
+                    glyphIndex++;
+                }
             }
         }
         drawGlyph(geometronCanvas, mainGVM);        
@@ -195,13 +206,54 @@ function keyPressed() {
     }
     if (actionKey === 0o22) {
         //up arrow, move up in hypercube
+        if(mainGVM.address === 0o237){
+           mainGVM.address = 0o220; 
+        } else{
+            mainGVM.address++;
+        }
+
+        mainGVM.glyph = mainGVM.hypercube[mainGVM.address];
+        mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+        mainGVM.glyph.push(0o207);
+        drawGlyph(geometronCanvas, mainGVM);        
+        spellGVM.glyph = mainGVM.glyph; 
+        spellGlyph(geometronSpellCanvas, spellGVM);
+
     }
     if (actionKey === 0o23) {
         //down arrow,move down in hypercube
+        if(mainGVM.address === 0o220){
+           mainGVM.address = 0o237; 
+        } else{
+            mainGVM.address--;
+        }
+        
+        mainGVM.glyph = mainGVM.hypercube[mainGVM.address];
+        mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+        mainGVM.glyph.push(0o207);
+        drawGlyph(geometronCanvas, mainGVM);        
+        spellGVM.glyph = mainGVM.glyph; 
+        spellGlyph(geometronSpellCanvas, spellGVM);
+    
     }
-            ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
-            ctx.font = '16px Arial';
-            ctx.fillText("0" + mainGVM.address.toString(8) + ":",10,25);
+    ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
+    ctx.font = '16px Arial';
+    ctx.fillText("0" + mainGVM.address.toString(8) + ":",10,25);
+    
+    //put current glyph into hypercube
+    //put current glyph into either shape or symbols array
+    mainGVM.hypercube[mainGVM.address] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+    if(mainGVM.address < 0o1000){
+        shapes[mainGVM.address - 0o220] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+    } else{
+        symbols[mainGVM.address - 0o220] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+    }
+    
+    fetch('save-file.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+        body: 'data=' + JSON.stringify(geometronJSON) + '&filename=geometron.json'
+    });
 }
 
 
