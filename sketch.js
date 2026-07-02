@@ -113,8 +113,8 @@ function keyPressed() {
         actionKey = key.charCodeAt(0);
     } else {
         // Map special keys to unique integers below 32
-        if (keyCode === ENTER)     actionKey = 0o12; 
         if (keyCode === BACKSPACE) actionKey = 0o10;  
+        if (keyCode === ENTER)     actionKey = 0o12; 
         if (keyCode === LEFT_ARROW)  actionKey = 0o20;  
         if (keyCode === RIGHT_ARROW) actionKey = 0o21;  
         if (keyCode === UP_ARROW)    actionKey = 0o22;  
@@ -138,8 +138,9 @@ function keyPressed() {
         //delete character before the cursor
         rootMagic(mainGVM,0o10);
     }
-    if (actionKey === 0o11) {
-        //clear
+    if (actionKey === 0o12) {
+        //ENTER key
+        //mode switch from shape to font to word        
     }
     if (actionKey === 0o20) {
         //0o20 left arrow, cursor back
@@ -177,7 +178,7 @@ function keyPressed() {
     
     geometronJSON.canvas = mainGVM.canvas;
     geometronJSON.style = mainGVM.style;
-    geometronJSON.cursore = mainGVM.cursor;
+    geometronJSON.cursor = mainGVM.cursor;
     fetch('save-file.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
