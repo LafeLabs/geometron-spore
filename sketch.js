@@ -5,7 +5,9 @@ thispoint.y = 0;
 shapeTable = [];
 
 audioOn = false;
+
     
+
 function setup() {
     createCanvas(0.48*innerWidth,0.97*innerHeight);  
     if(audioOn){
@@ -112,6 +114,25 @@ function mouseWheel(event) {
 }
 
 function keyPressed() {
+
+    if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
+        fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
+        fileNameSVG = fileNameBase + ".svg";
+        fileNameJSON = fileNameBase + ".json";
+        mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+        drawGlyph(geometronCanvas, mainGVM);
+        mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
+        
+        data = encodeURIComponent(mainGVM.svgString);
+        fetch('save-file.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+            body: 'data=' + data + '&filename=' + fileNameSVG
+        });
+        
+        mainGVM.glyph.push(0o207);
+        return false; 
+    }
     let actionKey = null;
     if (key.length === 1) {
         actionKey = key.charCodeAt(0);

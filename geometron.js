@@ -73,6 +73,7 @@ function drawGlyph(canvas, gvm){
     gvm.cursorStack = [];
     
     gvm.svgString = "<svg width=\"" + gvm.canvas.width.toString() + "\" height=\"" + gvm.canvas.height.toString() + "\" viewbox = \"0 0 " + gvm.canvas.width.toString() + " " + gvm.canvas.height.toString() + "\"  xmlns=\"http://www.w3.org/2000/svg\">\n";
+    gvm.svgString += "<!--<json></json>-->";
     ctx = canvas.getContext("2d");
     canvas.width = gvm.canvas.width;
     canvas.height = gvm.canvas.height;
@@ -122,7 +123,6 @@ function spellGlyph(canvas, gvm){
         } else{
             geometronAction(ctx, gvm,gvm.glyph[index]);
         }
-
         if(gvm.cursor.x > gvm.canvas.width - gvm.geometronFontSize - 10){
             gvm.cursor.x = 10;
             gvm.cursor.y += gvm.geometronFontSize + 10;
