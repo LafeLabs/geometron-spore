@@ -8,6 +8,12 @@ $baseurl = explode("geometron-spore.php",$spore)[0];
 @copy($baseurl."hypercube.json","hypercube.json");
 @copy($baseurl."sketch.js","sketch.js");
 
+@copy($baseurl."index.html","index.html");
+@copy($baseurl."README.md","README.md");
+@copy($baseurl."editor.html","editor.html");
+@copy($baseurl."load-file.php","load-file.php");
+@copy($baseurl."save-file.php","save-file.php");
+@copy($baseurl."list-files.php","list-files.php");
 
 ?>
 <a href = "geometron.html">geometron.html</a>
