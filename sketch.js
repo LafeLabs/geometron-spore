@@ -49,6 +49,10 @@ function setup() {
                 mainGVM.hypercube[0o1220 + index] = symbols[index];
                 spellGVM.hypercube[0o1220 + index] = symbols[index];
             }
+            mainGVM.cursor = geometronJSON.cursor;
+            mainGVM.canvas = geometronJSON.canvas;
+            mainGVM.style = geometronJSON.canvas;
+
             mainGVM.glyph = mainGVM.hypercube[mainGVM.address];
             spellGVM.glyph = mainGVM.glyph;
             mainGVM.glyph =  mainGVM.glyph.filter(item => item !== 0o207);
@@ -122,15 +126,19 @@ function keyPressed() {
     }
     
     if(actionKey >= 0o40 && actionKey < 0o177){
-        let oldGlyph = mainGVM.glyph;
-        mainGVM.glyph = [];
-        for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
-            if(oldGlyph[glyphIndex] != 0o207){
-                mainGVM.glyph.push(oldGlyph[glyphIndex]);
-            } else{
-                mainGVM.glyph.push();
-                mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
-                mainGVM.glyph.push(0o207);
+        if(mainGVM.hypercube[actionKey][0] < 0o40){
+            rootMagic(mainGVM,mainGVM.hypercube[actionKey][0]);
+        } else{
+            let oldGlyph = mainGVM.glyph;
+            mainGVM.glyph = [];
+            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                if(oldGlyph[glyphIndex] != 0o207){
+                    mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                } else{
+                        mainGVM.glyph.push();
+                        mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
+                        mainGVM.glyph.push(0o207);
+                }
             }
         }
     }

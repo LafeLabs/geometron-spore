@@ -19,7 +19,8 @@ class GVM {       //Geometron Virtual Machine
         "unit": 100,
         "x0": 100,
         "y0": 100,
-        "theta0": -Math.PI/2
+        "theta0": -Math.PI/2,
+        "viewStep":50
     };
     this.cursor = {
         "x": 100,
@@ -146,6 +147,9 @@ function rootMagic(gvm,action){
                 }
             }
             break;
+        case 0o11:
+            gvm.glyph = [0o207];
+            break;
         case 0o20:
             //0o20 left arrow, cursor back
             if(gvm.glyph[0] == 0o207){
@@ -208,6 +212,35 @@ function rootMagic(gvm,action){
             gvm.glyph = gvm.glyph.filter(cursorCode => cursorCode !== 0o207);
             gvm.glyph.push(0o207);
             break;
+        case 0o30:
+            gvm.canvas.y0 -= gvm.canvas.viewStep;
+            break;
+        case 0o31:
+            gvm.canvas.y0 += gvm.canvas.viewStep;
+            break;
+        case 0o32:
+            gvm.canvas.x0 -= gvm.canvas.viewStep;
+            break;
+        case 0o33:
+            gvm.canvas.x0 += gvm.canvas.viewStep;
+            break;
+        case 0o34:
+            gvm.canvas.theta0 -= Math.PI/10;
+            break;
+        case 0o35:
+            gvm.canvas.theta0 += Math.PI/10;
+            break;
+        case 0o36:
+            gvm.canvas.unit /= 1.1; 
+            gvm.canvas.x0 = 0.5*gvm.canvas.width + (gvm.canvas.x0 - 0.5*gvm.canvas.width)/1.1;
+            gvm.canvas.y0 = 0.5*gvm.canvas.height + (gvm.canvas.y0 - 0.5*gvm.canvas.height)/1.1;
+            break;
+        case 0o37:
+            gvm.canvas.unit *= 1.1; 
+            gvm.canvas.x0 = 0.5*gvm.canvas.width + (gvm.canvas.x0 - 0.5*gvm.canvas.width)/1.1;
+            gvm.canvas.y0 = 0.5*gvm.canvas.height + (gvm.canvas.y0 - 0.5*gvm.canvas.height)/1.1;            
+            break;
+            
     }
 }
 
