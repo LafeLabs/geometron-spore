@@ -1,99 +1,18 @@
-geometronJSON0  = {
-    "spore": "https://raw.githubusercontent.com/LafeLabs/geometron-spore/refs/heads/main/geometron.php",
-    "shapeTable": [
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        []
-    ],
-    "symbolTable": [
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        []
-    ],
-    "canvas": {
-        "width": 691.1999999999999,
-        "height": 849.72,
-        "unit": 142.8099173553718,
-        "x0": 330.6494043668274,
-        "y0": 732.2784308629389,
-        "theta0": -1.5707963267948966,
-        "viewStep": 50
-    },
-    "style": {
-        "color0": "black",
-        "color1": "black",
-        "color2": "red",
-        "color3": "orange",
-        "color4": "yellow",
-        "color5": "green",
-        "color6": "blue",
-        "color7": "purple",
-        "fill0": "black",
-        "fill1": "black",
-        "fill2": "red",
-        "fill3": "orange",
-        "fill4": "yellow",
-        "fill5": "green",
-        "fill6": "blue",
-        "fill7": "purple",
-        "line0": 5,
-        "line1": 6,
-        "line2": 2,
-        "line3": 2,
-        "line4": 2,
-        "line5": 2,
-        "line6": 2,
-        "line7": 2
-    },
-    "cursor": {
-        "x": 330.64940436682747,
-        "y": 589.4685135075672,
-        "r": 142.8099173553718,
-        "theta": -7.853981633974483,
-        "thetaStep": 1.5707963267948966,
-        "scaleFactor": 2
-    }
-}
-
 class GVM {       //Geometron Virtual Machine
   constructor() {
+
     this.action = 0o177;
     this.address = 0o220;
-    this.geometronFontSize = 36;
+    this.glyph = [];
+    this.svgString = "";
+    this.cursorStack = [];
+    
     this.hypercube = [];
     for(let index = 0; index < 1024; index++){
         this.hypercube.push([0o177]);
     }
-    this.glyph = [];
-    this.svgString = "";
-    this.word = "";
-    this.cursorStack = [];
+
+
     this.canvas = {
         "width": 200,
         "height": 200,
@@ -107,6 +26,7 @@ class GVM {       //Geometron Virtual Machine
         "x": 100,
         "y": 100,
         "r": 100,
+        "word":"",
         "theta": -Math.PI/2,
         "thetaStep": Math.PI/2,
         "scaleFactor": 2
@@ -137,9 +57,45 @@ class GVM {       //Geometron Virtual Machine
         "line6": 2,
         "line7": 2
     };
+    this.robot = {};
+    this.vr = {};
+    this.quantum = {};
+    this.synth = {};
+    this.keyboard = {
+        "mode":0
+    };
+    this.mouse = {
+        "x":0,
+        "y":0,
+        "z":0
+    }
   }
 }
 
+function saveGVM(gvm){
+    data = encodeURIComponent(JSON.stringify(gvm,null,"    "));
+    fetch('save-file.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+        body: 'data=' + data + '&filename=gvm.json'
+    });    
+}
+
+function saveHypercube(gvm){
+    data = encodeURIComponent(JSON.stringify(gvm.hypercube,null,"    "));
+    fetch('save-file.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+        body: 'data=' + data + '&filename=hypercube.json'
+    });
+}
+
+function loadHyperCube(gvm,hypercube){
+    for(let index = 0;index < hypercube.length;index++){
+        gvm.hypercube[index] = hypercube[index];
+    }
+    return gvm;
+}
 
 function drawGlyph(canvas, gvm){
 
@@ -173,10 +129,8 @@ function drawGlyph(canvas, gvm){
 
 
 function spellGlyph(canvas, gvm){
-    lineIndex = 0;
     gvm.canvas.x0 = 30;
-    gvm.canvas.y0 = 50 + gvm.geometronFontSize;
-    gvm.canvas.unit = gvm.geometronFontSize;
+    gvm.canvas.y0 = 50 + gvm.canvas.unit;
     gvm.style.line0 = 2;
     gvm.cursor.x = gvm.canvas.x0;
     gvm.cursor.y = gvm.canvas.y0;
@@ -204,9 +158,9 @@ function spellGlyph(canvas, gvm){
         } else{
             geometronAction(ctx, gvm,gvm.glyph[index]);
         }
-        if(gvm.cursor.x > gvm.canvas.width - gvm.geometronFontSize - 10){
+        if(gvm.cursor.x > gvm.canvas.width - gvm.canvas.unit - 10){
             gvm.cursor.x = 10;
-            gvm.cursor.y += gvm.geometronFontSize + 10;
+            gvm.cursor.y += gvm.canvas.unit + 10;
         }
     }
     

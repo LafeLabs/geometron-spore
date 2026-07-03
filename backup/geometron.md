@@ -7,5 +7,5 @@ self-replicating geometron instance
  - [geometron.js](geometron.js)
  - [sketch.js](sketch.js)
  - [gvm.json](gvm.json)
- - [hypercube.json](hypercube.json)
+ - [hypercube](hypercube)
  - [geometron.php](geometron.php)
