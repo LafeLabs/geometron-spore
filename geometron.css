@@ -17,6 +17,12 @@
     z-index:-2;
     overflow:scroll;
 }
+#geometron-glyph-scroll svg{
+    max-width:50%;
+    display:block;
+    margin:auto;
+    border:solid;
+}
 #geometron-spell-canvas{
     position:absolute;
     left:1%;

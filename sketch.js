@@ -6,7 +6,7 @@ shapeTable = [];
 
 audioOn = false;
 
-    
+feedDisplay = false;
 
 function setup() {
     createCanvas(0.48*innerWidth,0.97*innerHeight);  
@@ -116,22 +116,29 @@ function mouseWheel(event) {
 function keyPressed() {
 
     if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
+        document.getElementById("geometron-canvas").style.display="none";
+        document.getElementById("geometron-glyph-scroll").innerHTML = "";
+        //put all the existing images in here with delete key
+        
         fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
         fileNameSVG = fileNameBase + ".svg";
-        fileNameJSON = fileNameBase + ".json";
         mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
         drawGlyph(geometronCanvas, mainGVM);
         mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
-        
+
         data = encodeURIComponent(mainGVM.svgString);
         fetch('save-file.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
             body: 'data=' + data + '&filename=' + fileNameSVG
         });
-        
         mainGVM.glyph.push(0o207);
+        //add new image to top of feed with delete key as well but it's its own thing
+        document.querySelector('#geometron-glyph-scroll').insertAdjacentHTML('afterbegin', mainGVM.svgString);
         return false; 
+    }
+    if (key === 'Escape') {
+        console.log("Escape key was pressed!");
     }
     let actionKey = null;
     if (key.length === 1) {
@@ -156,7 +163,6 @@ function keyPressed() {
                 if(oldGlyph[glyphIndex] != 0o207){
                     mainGVM.glyph.push(oldGlyph[glyphIndex]);
                 } else{
-                        mainGVM.glyph.push();
                         mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
                         mainGVM.glyph.push(0o207);
                 }
