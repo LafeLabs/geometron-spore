@@ -1,6 +1,6 @@
 <?php
-$spore = "https://raw.githubusercontent.com/LafeLabs/geometron-spore/refs/heads/main/geometron.php";
-$baseurl = explode("geometron.php",$spore)[0];
+$spore = "https://raw.githubusercontent.com/LafeLabs/geometron-spore/refs/heads/main/geometron-spore.php";
+$baseurl = explode("geometron-spore.php",$spore)[0];
 
 @copy($baseurl."geometron.html","geometron.html");
 @copy($baseurl."geometron.css","geometron.css");
