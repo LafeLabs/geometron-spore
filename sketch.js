@@ -8,8 +8,13 @@ audioOn = true;
 
 feedDisplay = false;
 
+shapeTableIndex = 9;  //multiply by 16 to get base hypercube address for shape table
+//gvm.address = 16*shapeTableIndex + localIndex for bottom row
+//gvm.address = 16*shapeTableIndex + 8 + localIndex for top row
+
 function setup() {
     createCanvas(innerWidth,innerHeight);  
+
     if(audioOn){
         mic = new p5.AudioIn();
         mic.start();
@@ -25,7 +30,7 @@ function setup() {
     mainGVM = new GVM(); 
     mainGVM.hypercube = hypercube0; 
     mainGVM.canvas.width = 0.48 * innerWidth; 
-    mainGVM.canvas.height = 0.97 * innerHeight;
+    mainGVM.canvas.height = mainGVM.canvas.width;
     mainGVM.canvas.x0 = 0.5 * mainGVM.canvas.width; 
     mainGVM.canvas.y0 = 0.5 * mainGVM.canvas.height;
     mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
@@ -49,7 +54,7 @@ function setup() {
                 spellGVM.hypercube[0o1220 + index] = symbols[index];
             }
             mainGVM.cursor = geometronJSON.cursor;
-            mainGVM.canvas = geometronJSON.canvas;
+//            mainGVM.canvas = geometronJSON.canvas;
 //            mainGVM.style = geometronJSON.style;
 
             mainGVM.glyph = mainGVM.hypercube[mainGVM.address];
@@ -58,7 +63,10 @@ function setup() {
             spellGVM.glyph =  spellGVM.glyph.filter(item => item !== 0o207);
             mainGVM.glyph.push(0o207);
             spellGVM.glyph.push(0o207);
-            setSpellStatus();
+            drawGlyph(geometronCanvas, mainGVM);
+            spellGlyph(geometronSpellCanvas, spellGVM);
+
+            setText();
   
     });
 
@@ -74,14 +82,14 @@ function draw(){
         spectrum_bin_frequency = nyquistFreq / (audio_spectrum.length);
         fill(255);
         noStroke();     
-        rect(0, height - 100, width, height); 
+        rect(0, 0, width, height); 
         stroke(0);
         strokeWeight(1);
         noFill();
         beginShape();
         vertex(0,height);
         for (let index = 0; index < audio_spectrum.length; index++) {
-            vertex(index, map(audio_spectrum[index], 0, 255, height, height - 100));
+            vertex(index, map(audio_spectrum[index], 0, 255, height, 0));
         }
         vertex(width,height);
         endShape(); 
@@ -89,9 +97,24 @@ function draw(){
         strokeWeight(30);        
     }
    
+    let cellSize = 0.5*innerWidth/8;
     
-    if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
-   
+    if(mouseX > 0 && mouseX < 0.5*width && mouseY > height - 2*cellSize && mouseY < height){
+       if(mouseX != pmouseX || mouseY != pmouseY){
+            for(let index = 0;index < 8; index++){
+                strokeWeight(5);
+                rect(index*cellSize,height-cellSize,cellSize,cellSize);
+                rect(index*cellSize,height-2*cellSize,cellSize,cellSize);
+                strokeWeight(0);
+                textSize(20);
+                fill(0);
+                text( "0" +(16*shapeTableIndex + index).toString(8),index*cellSize + 10,height-cellSize + 0.5*cellSize);
+                text( "0" +(16*shapeTableIndex + 8 + index).toString(8),index*cellSize + 10,height - 2*cellSize + 0.5*cellSize);                
+                noFill();
+            }
+            fill("#00000080");
+            rect(cellSize*Math.floor(mouseX/cellSize),height - cellSize - cellSize*Math.floor((height-mouseY)/cellSize),cellSize,cellSize);
+        }
     }
     
     
@@ -191,7 +214,10 @@ function keyPressed() {
     spellGVM.glyph = mainGVM.glyph; 
     spellGlyph(geometronSpellCanvas, spellGVM);
     
-    setSpellStatus();
+    drawGlyph(geometronCanvas, mainGVM);
+    spellGlyph(geometronSpellCanvas, spellGVM);
+
+    setText();
  
     //put current glyph into hypercube
     //put current glyph into either shape or symbols array
@@ -218,9 +244,7 @@ function mouseClicked() {
     
 }
 
-function setSpellStatus(){
-    drawGlyph(geometronCanvas, mainGVM);
-    spellGlyph(geometronSpellCanvas, spellGVM);
+function setText(){
     ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
     ctx.font = '40px Arial';
     let spellStatusX = 10;
