@@ -1,19 +1,32 @@
-# [$$ \gamma \epsilon \omega \mu \epsilon \tau \rho \omicron \nu $$](https://github.com/lafelabs/geometron-spore/)
+# [geometron](https://github.com/lafelabs/geometron-spore/)
+
+$$ \gamma \epsilon \omega \mu \epsilon \tau \rho \omicron \nu $$
 
 A geometric meta-language.
+
+## geometron spore
+
+ - [geometron-spore.php](geometron-spore.php)
+
+## geometron core:
 
  - [geometron.html](geometron.html)
  - [geometron.css](geometron.css)
  - [geometron.js](geometron.js)
- - [gvm.json](gvm.json)
  - [hypercube.json](hypercube.json)
  - [sketch.js](sketch.js)
- - [geometron.php](geometron.php)
+
+## spore set
+
  - [README.md](README.md)
  - [index.html](index.html)
  - [editor.html](editor.html)
  - [load-file.php](load-file.php)
  - [save-file.php](save-file.php)
+ - [list-files.php](list-files.php)
+
+## JavaScript libraries
+
  - [p5js](https://p5js.org/)
  - [ace.js](https://ace.c9.io/)
  - [showdown.js](https://github.com/showdownjs/showdown)

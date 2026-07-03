@@ -72,15 +72,6 @@ class GVM {       //Geometron Virtual Machine
   }
 }
 
-function saveGVM(gvm){
-    data = encodeURIComponent(JSON.stringify(gvm,null,"    "));
-    fetch('save-file.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-        body: 'data=' + data + '&filename=gvm.json'
-    });    
-}
-
 function saveHypercube(gvm){
     data = encodeURIComponent(JSON.stringify(gvm.hypercube,null,"    "));
     fetch('save-file.php', {
