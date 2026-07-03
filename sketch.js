@@ -4,12 +4,12 @@ thispoint.x = 0;
 thispoint.y = 0;
 shapeTable = [];
 
-audioOn = false;
+audioOn = true;
 
 feedDisplay = false;
 
 function setup() {
-    createCanvas(0.48*innerWidth,0.97*innerHeight);  
+    createCanvas(innerWidth,innerHeight);  
     if(audioOn){
         mic = new p5.AudioIn();
         mic.start();
@@ -30,14 +30,11 @@ function setup() {
     mainGVM.canvas.y0 = 0.5 * mainGVM.canvas.height;
     mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
     mainGVM.style.line0 = 5; 
-    mainGVM.glyph = [0o341,0o306,0o332,0o341,0o207]; 
-//    drawGlyph(geometronCanvas, mainGVM);
     spellGVM = new GVM(); 
     spellGVM.hypercube = hypercube0; 
     spellGVM.canvas.width = 0.48 * innerWidth; 
     spellGVM.canvas.height = 0.97 * innerHeight;
     spellGVM.glyph = mainGVM.glyph; 
-  //  spellGlyph(geometronSpellCanvas, spellGVM);
     geometronJSON = {};
     fetch('load-file.php?filename=geometron.json')
         .then(xhr => xhr.text())
@@ -53,7 +50,7 @@ function setup() {
             }
             mainGVM.cursor = geometronJSON.cursor;
             mainGVM.canvas = geometronJSON.canvas;
-            mainGVM.style = geometronJSON.canvas;
+//            mainGVM.style = geometronJSON.style;
 
             mainGVM.glyph = mainGVM.hypercube[mainGVM.address];
             spellGVM.glyph = mainGVM.glyph;
@@ -61,16 +58,12 @@ function setup() {
             spellGVM.glyph =  spellGVM.glyph.filter(item => item !== 0o207);
             mainGVM.glyph.push(0o207);
             spellGVM.glyph.push(0o207);
-            drawGlyph(geometronCanvas, mainGVM);
-            spellGlyph(geometronSpellCanvas, spellGVM);
-            ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
-            ctx.font = '16px Arial';
-            ctx.fillText("0" + mainGVM.address.toString(8) + ":",10,20);
-            
-
-        });
+            setSpellStatus();
+  
+    });
 
 }
+
 
 inLine = false;
 function draw(){
@@ -95,7 +88,7 @@ function draw(){
         stroke(0);
         strokeWeight(30);        
     }
-
+   
     
     if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
    
@@ -198,10 +191,8 @@ function keyPressed() {
     spellGVM.glyph = mainGVM.glyph; 
     spellGlyph(geometronSpellCanvas, spellGVM);
     
-    ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
-    ctx.font = '16px Arial';
-    ctx.fillText("0" + mainGVM.address.toString(8) + ":",10,25);
-    
+    setSpellStatus();
+ 
     //put current glyph into hypercube
     //put current glyph into either shape or symbols array
     mainGVM.hypercube[mainGVM.address] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
@@ -225,4 +216,65 @@ function keyPressed() {
 function mouseClicked() {
 
     
+}
+
+function setSpellStatus(){
+    drawGlyph(geometronCanvas, mainGVM);
+    spellGlyph(geometronSpellCanvas, spellGVM);
+    ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
+    ctx.font = '40px Arial';
+    let spellStatusX = 10;
+    let spellStatusY = 38;
+    
+    switch (mainGVM.address){
+        case 0o220:
+            ctx.fillText("Q:",spellStatusX,spellStatusY);
+            break;
+        case 0o221:
+            ctx.fillText("W:",spellStatusX,spellStatusY);
+            break;
+        case 0o222:
+            ctx.fillText("E:",spellStatusX,spellStatusY);
+            break;
+        case 0o223:
+            ctx.fillText("R:",spellStatusX,spellStatusY);
+            break;
+        case 0o224:
+            ctx.fillText("T:",spellStatusX,spellStatusY);
+            break;
+        case 0o225:
+            ctx.fillText("Y:",spellStatusX,spellStatusY);
+            break;
+        case 0o226:
+            ctx.fillText("U:",spellStatusX,spellStatusY);
+            break;
+        case 0o227:
+            ctx.fillText("I:",spellStatusX,spellStatusY);
+            break;
+        case 0o230:
+            ctx.fillText("A:",spellStatusX,spellStatusY);
+            break;
+        case 0o231:
+            ctx.fillText("S:",spellStatusX,spellStatusY);
+            break;
+        case 0o232:
+            ctx.fillText("D:",spellStatusX,spellStatusY);
+            break;
+        case 0o233:
+            ctx.fillText("F:",spellStatusX,spellStatusY);
+            break;
+        case 0o234:
+            ctx.fillText("G:",spellStatusX,spellStatusY);
+            break;
+        case 0o235:
+            ctx.fillText("H:",spellStatusX,spellStatusY);
+            break;
+        case 0o236:
+            ctx.fillText("J:",spellStatusX,spellStatusY);
+            break;
+        case 0o237:
+            ctx.fillText("K:",spellStatusX,spellStatusY);
+            break;
+    
+    }       
 }

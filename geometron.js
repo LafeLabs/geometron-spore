@@ -94,7 +94,7 @@ function drawGlyph(canvas, gvm){
 function spellGlyph(canvas, gvm){
     lineIndex = 0;
     gvm.canvas.x0 = 30;
-    gvm.canvas.y0 = 30 + gvm.geometronFontSize;
+    gvm.canvas.y0 = 50 + gvm.geometronFontSize;
     gvm.canvas.unit = gvm.geometronFontSize;
     gvm.style.line0 = 2;
     gvm.cursor.x = gvm.canvas.x0;
