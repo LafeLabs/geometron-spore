@@ -36,5 +36,7 @@ A geometric meta-language.
 
 ## Glyphs
 
+![](hypercube-side.svg)
+![](hypercube-bottom.svg)
 ![](hello.svg)
 ![](resistor.svg)
