@@ -4,9 +4,8 @@ spellGVM = new GVM();
 
 function setup() {
     
+    newCanvas = createCanvas(innerWidth,innerHeight);
     
-    createCanvas(innerWidth,innerHeight);
-
     if(audioOn){
         mic = new p5.AudioIn();
         mic.start();
@@ -110,9 +109,6 @@ function mouseWheel(event) {
 function keyPressed() {
 
     if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
-        document.getElementById("geometron-canvas").style.display="none";
-        document.getElementById("geometron-glyph-scroll").innerHTML = "";
-        //put all the existing images in here with delete key
         
         fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
         fileNameSVG = fileNameBase + ".svg";
@@ -123,7 +119,6 @@ function keyPressed() {
         geometronJSON.style = mainGVM.style;
         geometronJSON.cursor = mainGVM.cursor;
         geometronJSON.glyph = mainGVM.glyph;
-
 
         mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
 
