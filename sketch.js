@@ -150,21 +150,48 @@ function keyPressed() {
         if (keyCode === LEFT_ARROW)  actionKey = 0o20;  
         if (keyCode === RIGHT_ARROW) actionKey = 0o21;  
         if (keyCode === UP_ARROW)    actionKey = 0o22;  
-        if (keyCode === DOWN_ARROW)  actionKey = 0o23;  
+        if (keyCode === DOWN_ARROW)  actionKey = 0o23;
     }
     
     if(actionKey >= 0o40 && actionKey < 0o177){
-        if(mainGVM.hypercube[actionKey][0] < 0o40){
-            rootMagic(mainGVM,mainGVM.hypercube[actionKey][0]);
-        } else{
+        
+        if(mainGVM.keyboard.mode === 0){
+            if(mainGVM.hypercube[actionKey][0] < 0o40){
+                rootMagic(mainGVM,mainGVM.hypercube[actionKey][0]);
+            } else{
+                let oldGlyph = mainGVM.glyph;
+                mainGVM.glyph = [];
+                for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                    if(oldGlyph[glyphIndex] != 0o207){
+                        mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                    } else{
+                            mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
+                            mainGVM.glyph.push(0o207);
+                    }
+                }
+            }            
+        }
+        if(mainGVM.keyboard.mode === 1){
             let oldGlyph = mainGVM.glyph;
             mainGVM.glyph = [];
             for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
                 if(oldGlyph[glyphIndex] != 0o207){
                     mainGVM.glyph.push(oldGlyph[glyphIndex]);
                 } else{
-                        mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
-                        mainGVM.glyph.push(0o207);
+                    mainGVM.glyph.push(actionKey + 0o1000);
+                    mainGVM.glyph.push(0o207);
+                }
+            }
+        }
+        if(mainGVM.keyboard.mode === 2){
+            let oldGlyph = mainGVM.glyph;
+            mainGVM.glyph = [];
+            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                if(oldGlyph[glyphIndex] != 0o207){
+                    mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                } else{
+                    mainGVM.glyph.push(actionKey);
+                    mainGVM.glyph.push(0o207);
                 }
             }
         }
@@ -174,6 +201,8 @@ function keyPressed() {
         rootMagic(mainGVM,0o10);
     }
     if (actionKey === 0o12) {
+        rootMagic(mainGVM,0o12);
+
         //ENTER key
         //mode switch from shape to font to word        
     }
@@ -215,11 +244,23 @@ function mouseClicked() {
 
 function setText(){
     ctx = document.getElementById("geometron-spell-canvas").getContext("2d");
-    ctx.font = '40px Arial';
+    ctx.font = '30px Arial';
+
+    if(mainGVM.keyboard.mode === 0){
+        ctx.fillText("geometry mode",0.5*ctx.canvas.width,30);
+    }
+    if(mainGVM.keyboard.mode === 1){
+        ctx.fillText("font mode",0.5*ctx.canvas.width,30);
+    }
+    if(mainGVM.keyboard.mode === 2){
+        ctx.fillText("word mode",0.5*ctx.canvas.width,30);
+    }
+
     let spellStatusX = 10;
     let spellStatusY = 38;
-    ctx.fillText("0" + mainGVM.address.toString(8),0.25*innerWidth - 40,40);
-    
+    ctx.font = '40px Arial';
+    ctx.fillText("0" + mainGVM.address.toString(8),0.25*ctx.canvas.width - 40,40);
+
     switch (mainGVM.address){
         case 0o220:
             ctx.fillText("Q:",spellStatusX,spellStatusY);

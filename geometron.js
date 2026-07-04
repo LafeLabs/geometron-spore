@@ -30,6 +30,7 @@ class GVM {       //Geometron Virtual Machine
         "theta": -Math.PI/2,
         "thetaStep": Math.PI/2,
         "scaleFactor": 2,
+        "font":"Arial",
         "bezier":{
             "cpx1":0,
             "cpy1":0,
@@ -105,7 +106,7 @@ function drawGlyph(canvas, gvm){
     gvm.cursor.scaleFactor = 2;
     gvm.cursor.thetaStep = Math.PI/2;
     gvm.svgString = "";
-    gvm.word = "";
+    gvm.cursor.word = "";
     gvm.cursorStack = [];
     
     gvm.svgString = "<svg width=\"" + gvm.canvas.width.toString() + "\" height=\"" + gvm.canvas.height.toString() + "\" viewbox = \"0 0 " + gvm.canvas.width.toString() + " " + gvm.canvas.height.toString() + "\"  xmlns=\"http://www.w3.org/2000/svg\">\n";
@@ -138,7 +139,7 @@ function spellGlyph(canvas, gvm){
     gvm.cursor.scaleFactor = 2;
     gvm.cursor.thetaStep = Math.PI/2;
     gvm.svgString = "";
-    gvm.word = "";
+    gvm.cursor.word = "";
     gvm.cursorStack = [];
     
     gvm.svgString = "<svg width=\"" + gvm.canvas.width.toString() + "\" height=\"" + gvm.canvas.height.toString() + "\" viewbox = \"0 0 " + gvm.canvas.width.toString() + " " + gvm.canvas.height.toString() + "\"  xmlns=\"http://www.w3.org/2000/svg\">\n";
@@ -183,6 +184,13 @@ function rootMagic(gvm,action){
             break;
         case 0o11:
             gvm.glyph = [0o207];
+            gvm.cursor.word = "";
+            break;
+        case 0o12:
+            mainGVM.keyboard.mode++;
+            if(mainGVM.keyboard.mode > 2){
+                mainGVM.keyboard.mode = 0;
+            }
             break;
         case 0o20:
             //0o20 left arrow, cursor back
@@ -295,6 +303,9 @@ function geometronAction(ctx, gvm,action){
             geometronAction(ctx, gvm,gvm.hypercube[action][index]);
         }
     }
+    if(action >= 0o40 && action < 0o177){
+        gvm.cursor.word += String.fromCodePoint(action);
+    }
     switch (action) {
         case 0o300:
             gvm.cursor.x = gvm.canvas.x0;
@@ -303,7 +314,7 @@ function geometronAction(ctx, gvm,action){
             gvm.cursor.thetaStep = Math.PI/2;
             gvm.cursor.theta = gvm.canvas.theta0;
             gvm.cursor.scaleFactor = 2;      
-            gvm.word = "";
+            gvm.cursor.word = "";
             ctx.strokeStyle = gvm.style.color0;
             ctx.fillStyle = gvm.style.fill0;
             ctx.lineWidth = gvm.style.line0;                
@@ -536,6 +547,17 @@ function geometronAction(ctx, gvm,action){
             //terminate unfilled path
             ctx.closePath();
             gvm.svgString += "\""+ " stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" fill = \"" + "none" + "\" "+"/>";
+            break;
+        case 0o365:
+            ctx.translate(gvm.cursor.x, gvm.cursor.y);
+            ctx.rotate(-gvm.canvas.theta0 + gvm.cursor.theta);
+            ctx.translate(-gvm.cursor.x, -gvm.cursor.y);
+            ctx.font = gvm.cursor.r.toString(8) + "px " + gvm.cursor.font;
+            ctx.fillText(gvm.cursor.word,gvm.cursor.x,gvm.cursor.y);    
+            ctx.translate(gvm.cursor.x, gvm.cursor.y);
+            ctx.rotate(+gvm.canvas.theta0 - gvm.cursor.theta);
+            ctx.translate(-gvm.cursor.x, -gvm.cursor.y);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             break;
         case 0o366:
             // start a self-contained cubic Bezier path            
