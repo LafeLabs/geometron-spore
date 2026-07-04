@@ -1,6 +1,8 @@
-audioOn = true;
+
 mainGVM = new GVM();
 spellGVM = new GVM(); 
+
+audioOn = false;
 
 function setup() {
     

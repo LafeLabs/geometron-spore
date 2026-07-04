@@ -1,4 +1,4 @@
-# [geometron](https://github.com/lafelabs/geometron-spore/)
+# [geometron](geometron.html)
 
 $$ \gamma \epsilon \omega \mu \epsilon \tau \rho \omicron \nu $$
 
@@ -11,6 +11,7 @@ A geometric meta-language.
  - [geometron.js](geometron.js)
  - [hypercube.json](hypercube.json)
  - [sketch.js](sketch.js)
+ - [geometron-glyph-feed.html](geometron-glyph-feed.html)
 
 ## JavaScript libraries
 
@@ -31,3 +32,8 @@ A geometric meta-language.
 ## geometron spore
 
  - [geometron-spore.php](geometron-spore.php)
+
+
+## Glyphs
+
+![](geometron-glyph-1783168556.svg)
