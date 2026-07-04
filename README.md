@@ -4,10 +4,6 @@ $$ \gamma \epsilon \omega \mu \epsilon \tau \rho \omicron \nu $$
 
 A geometric meta-language.
 
-## geometron spore
-
- - [geometron-spore.php](geometron-spore.php)
-
 ## geometron core:
 
  - [geometron.html](geometron.html)
@@ -15,6 +11,13 @@ A geometric meta-language.
  - [geometron.js](geometron.js)
  - [hypercube.json](hypercube.json)
  - [sketch.js](sketch.js)
+
+## JavaScript libraries
+
+ - [p5js](https://p5js.org/)
+ - [ace.js](https://ace.c9.io/)
+ - [showdown.js](https://github.com/showdownjs/showdown)
+ - [mathjax.js](https://www.mathjax.org/)
 
 ## spore set
 
@@ -25,10 +28,6 @@ A geometric meta-language.
  - [save-file.php](save-file.php)
  - [list-files.php](list-files.php)
 
-## JavaScript libraries
+## geometron spore
 
- - [p5js](https://p5js.org/)
- - [ace.js](https://ace.c9.io/)
- - [showdown.js](https://github.com/showdownjs/showdown)
- - [mathjax.js](https://www.mathjax.org/)
-
+ - [geometron-spore.php](geometron-spore.php)
