@@ -16,13 +16,13 @@
         <tr>
             <td>current glyph name:</td>
             <td>
-                <input id = "glyph-name-input">
+                <input id = "old-glyph-name-input">
             </td>
         </tr>
         <tr>
             <td>new glyph name:</td>
             <td>
-                <input id = "glyph-name-input">
+                <input id = "new-glyph-name-input">
             </td>
         </tr>
         <tr>
@@ -35,34 +35,74 @@
     <div id = "geometron-glyph-feed"></div>
 </body>
 <script>
-document.getElementById("glyph-name-input").value = "";
-fetch('list-files.php')
-    .then(xhr => xhr.json())
-    .then(files => {
-        for (var index = 0; index < files.length; index++) {
-            if (files[index].endsWith(".svg")) {
-            
-                let newImageBox = document.createElement("DIV");
-                newImageBox.className = "image-box";
-                let newImg = document.createElement("IMG");
-                newImg.src = files[index]; 
-                newImg.onclick = function(){
-                    let glyphFileName = this.src.split('/').pop();
-                    document.getElementById("glyph-name-input").value = glyphFileName;
-                    document.getElementById("markdown-code-input").value = "![](" + glyphFileName + ")";
+document.getElementById("old-glyph-name-input").value = "";
+document.getElementById("new-glyph-name-input").value = "";
+document.getElementById("markdown-code-input").value = "";
+
+drawFeed();
+
+function drawFeed(){
+    fetch('list-files.php')
+        .then(xhr => xhr.json())
+        .then(files => {
+            document.getElementById("geometron-glyph-feed").innerHTML = "";
+            for (var index = 0; index < files.length; index++) {
+                if (files[index].endsWith(".svg")) {
+                
+                    let newImageBox = document.createElement("DIV");
+                    newImageBox.className = "image-box";
+                    let glyphNameLabel = document.createElement("SPAN");
+                    glyphNameLabel.innerHTML = files[index];
+                    glyphNameLabel.className = "glyph-name-label";
+                    newImageBox.appendChild(glyphNameLabel);
+                    let newImg = document.createElement("IMG");
+                    newImg.src = files[index]; 
+                    newImg.onclick = function(){
+                        let glyphFileName = this.src.split('/').pop();
+                        document.getElementById("old-glyph-name-input").value = glyphFileName;
+                        document.getElementById("markdown-code-input").value = "![](" + glyphFileName + ")";
+                        document.getElementById("new-glyph-name-input").select();
+                    }
+                    let newDeleteButton = document.createElement("SPAN");
+                    newDeleteButton.innerHTML = "DELETE GLYPH";
+                    newDeleteButton.className = "delete-button";
+                    newDeleteButton.onclick = function(){
+                        let glyphFileName = this.parentElement.getElementsByTagName("IMG")[0].src.split('/').pop();
+                        //delete-file.php --> glyphFileName
+                        //remove parent element
+                        fetch('delete-file.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                            body: 'filename=' + glyphFileName
+                        });
+                        this.parentElement.remove();
+                    }
+                    newImageBox.appendChild(newImg);
+                    newImageBox.appendChild(newDeleteButton);
+                    document.getElementById("geometron-glyph-feed").appendChild(newImageBox);
                 }
-                let newDeleteButton = document.createElement("SPAN");
-                newDeleteButton.innerHTML = "DELETE GLYPH";
-                newDeleteButton.className = "delete-button";
-                newDeleteButton.onclick = function(){
-                    
-                }
-                newImageBox.appendChild(newImg);
-                newImageBox.appendChild(newDeleteButton);
-                document.getElementById("geometron-glyph-feed").appendChild(newImageBox);
             }
-        }
-    });    
+        });        
+}
+
+    
+document.getElementById("new-glyph-name-input").onchange = function(){
+    newFileName = this.value;
+    if(newFileName.endsWith(".svg") === false){
+        newFileName += ".svg";
+    }
+    oldFileName = document.getElementById("old-glyph-name-input").value;
+    document.getElementById("old-glyph-name-input").value = newFileName;
+    document.getElementById("markdown-code-input").value = "![](" + newFileName + ")"; 
+    //rename.php?from=oldFileName&to=newFileName
+    fetch('rename-file.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+        body: 'from=' + oldFileName + '&to=' + newFileName
+    });
+    document.getElementById("markdown-code-input").select();
+    drawFeed();
+}
 </script>
 <style>
     body{
@@ -78,12 +118,22 @@ fetch('list-files.php')
         margin:auto;
         text-align:center;
     }
+    #geometron-glyph-feed{
+          overflow-y: scroll;
+    }
     .image-box{
         border:solid;
         width:50%;
         display:block;
         margin:auto;
         margin-bottom:3em;
+        cursor:pointer;
+    }
+    .image-box:hover{
+        border-color:green;
+    }
+    .glyph-name-label{
+        font-size:3em;
     }
     .delete-button{
         color:red;

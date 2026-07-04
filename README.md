@@ -36,4 +36,5 @@ A geometric meta-language.
 
 ## Glyphs
 
-![](geometron-glyph-1783168556.svg)
+![](hello.svg)
+![](resistor.svg)
