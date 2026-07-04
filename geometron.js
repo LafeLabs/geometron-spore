@@ -29,7 +29,15 @@ class GVM {       //Geometron Virtual Machine
         "word":"",
         "theta": -Math.PI/2,
         "thetaStep": Math.PI/2,
-        "scaleFactor": 2
+        "scaleFactor": 2,
+        "bezier":{
+            "cpx1":0,
+            "cpy1":0,
+            "cpx2":0,
+            "cpy2":0,
+            "x2":0,
+            "y2":0
+        }
     };
     this.style = {
         "color0": "black",
@@ -529,7 +537,28 @@ function geometronAction(ctx, gvm,action){
             ctx.closePath();
             gvm.svgString += "\""+ " stroke = \"" + ctx.strokeStyle + "\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" fill = \"" + "none" + "\" "+"/>";
             break;
-            
+        case 0o366:
+            // start a self-contained cubic Bezier path            
+            ctx.beginPath();
+            ctx.moveTo(Math.round(gvm.cursor.x),Math.round(gvm.cursor.y));
+            gvm.cursor.bezier.cpx1 = Math.round(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta));
+            gvm.cursor.bezier.cpy1 = Math.round(gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta)); 
+            gvm.svgString += "<path    d = \"M";
+            gvm.svgString += (Math.round(gvm.cursor.x)).toString() + ",";
+            gvm.svgString += (Math.round(gvm.cursor.y)).toString() + " C";
+            gvm.svgString += gvm.cursor.bezier.cpx1.toString() + "," + gvm.cursor.bezier.cpy1.toString() + " ";
+            break;
+        case 0o367:
+            // finish a self-contained cubic Bezier path
+            gvm.cursor.bezier.x2 = Math.round(gvm.cursor.x);
+            gvm.cursor.bezier.y2 = Math.round(gvm.cursor.y);
+            gvm.cursor.bezier.cpx2 = Math.round(gvm.cursor.x + gvm.cursor.r*Math.cos(gvm.cursor.theta));
+            gvm.cursor.bezier.cpy2 = Math.round(gvm.cursor.y + gvm.cursor.r*Math.sin(gvm.cursor.theta));
+            ctx.bezierCurveTo(gvm.cursor.bezier.cpx1,gvm.cursor.bezier.cpy1,gvm.cursor.bezier.cpx2,gvm.cursor.bezier.cpy2,gvm.cursor.bezier.x2,gvm.cursor.bezier.y2);
+            ctx.stroke();
+            gvm.svgString += gvm.cursor.bezier.cpx2.toString() + "," + gvm.cursor.bezier.cpy2.toString() + " ";
+            gvm.svgString += gvm.cursor.bezier.x2.toString() + "," + gvm.cursor.bezier.y2.toString() + "\" fill = \"none\" stroke-width = \"" + (ctx.lineWidth).toString() + "\" stroke = \"" + ctx.strokeStyle + "\" />";	
+            break;
         case 0o370:
             gvm.cursorStack.push({...gvm.cursor});
             break;
