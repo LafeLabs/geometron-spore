@@ -7,6 +7,7 @@ $baseurl = explode("geometron-spore.php",$spore)[0];
 @copy($baseurl."geometron.js","geometron.js");
 @copy($baseurl."hypercube.json","hypercube.json");
 @copy($baseurl."sketch.js","sketch.js");
+@copy($baseurl."geometron-glyph-feed.html","geometron-glyph-feed.html");
 
 @copy($baseurl."index.html","index.html");
 @copy($baseurl."README.md","README.md");
