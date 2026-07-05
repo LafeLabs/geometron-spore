@@ -235,6 +235,9 @@ function keyPressed() {
             rootMagic(mainGVM,0o23);
         }
         
+
+        mainGVM.glyph = mainGVM.glyph.filter(item => item !== null);
+
         spellGVM.glyph = mainGVM.glyph; 
         
         drawGlyph(geometronGlyphCanvas, mainGVM);
