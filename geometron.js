@@ -233,7 +233,7 @@ function rootMagic(gvm,action){
             break;
         case 0o22:
             //move up in hypercube address
-            if(gvm.address === 0o237){
+            if(gvm.address === 0o277){
                gvm.address = 0o220; 
             } else{
                 gvm.address++;
@@ -246,7 +246,12 @@ function rootMagic(gvm,action){
         case 0o23:
             // move down in hypercube address
             if(gvm.address === 0o220){
-               gvm.address = 0o237; 
+               for(let index = 0o277;index >= 0o220; index--){
+                   if(gvm.hypercube[index].length > 0){
+                        gvm.address = index;
+                        break;
+                   }
+               }
             } else{
                 gvm.address--;
             }

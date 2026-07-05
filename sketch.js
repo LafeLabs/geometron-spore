@@ -31,6 +31,14 @@ function setup() {
             mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
             mainGVM.style.line0 = 5;
             mainGVM.hypercube = JSON.parse(rawJSON);
+            
+            for(let index = 0o277;index >= 0o220; index--){
+                if(mainGVM.hypercube[index].length > 0){
+                    mainGVM.address = index;
+                    break;
+                }
+            }
+
             spellGVM.hypercube = mainGVM.hypercube; 
             spellGVM.canvas.width = 0.48 * innerWidth; 
             spellGVM.canvas.height = 0.97 * innerHeight;
