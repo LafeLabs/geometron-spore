@@ -563,6 +563,27 @@ function geometronAction(ctx, gvm,action){
             ctx.rotate(+gvm.canvas.theta0 - gvm.cursor.theta);
             ctx.translate(-gvm.cursor.x, -gvm.cursor.y);
             ctx.setTransform(1, 0, 0, 1, 0, 0);
+            gvm.svgString += "    <text x=\"";
+            gvm.svgString += Math.round(gvm.cursor.x).toString();
+            gvm.svgString += "\" y = \"";
+            gvm.svgString += Math.round(gvm.cursor.y).toString();
+            gvm.svgString += "\" fill = \"" + ctx.strokeStyle + "\""; 
+            gvm.svgString += " font-size = \"";
+            gvm.svgString += gvm.cursor.r + "px\"";
+            gvm.svgString += " font-family = \"" + gvm.cursor.font + "\"";
+            gvm.svgString += ">";
+            if(gvm.cursor.word == "&"){
+                gvm.cursor.word = "&amp;";
+            }
+            if(gvm.cursor.word == "<"){
+                gvm.cursor.word = "&lt;";
+            }
+            if(gvm.cursor.word == ">"){
+                gvm.cursor.word = "&gt;";
+            }
+            gvm.svgString += gvm.cursor.word;
+            gvm.svgString += "</text>\n";
+            gvm.cursor.word = "";
             break;
         case 0o366:
             // start a self-contained cubic Bezier path            

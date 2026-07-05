@@ -46,7 +46,7 @@ function drawFeed(){
         .then(xhr => xhr.json())
         .then(files => {
             document.getElementById("geometron-glyph-feed").innerHTML = "";
-            for (var index = 0; index < files.length; index++) {
+            for (var index = files.length - 1; index >= 0; index--) {
                 if (files[index].endsWith(".svg")) {
                 
                     let newImageBox = document.createElement("DIV");

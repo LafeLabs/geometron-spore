@@ -52,7 +52,13 @@ function setup() {
             spellGVM.glyph.push(0o207);
             drawGlyph(geometronGlyphCanvas, mainGVM);
             spellGlyph(geometronSpellCanvas, spellGVM);
-
+            let glyphString = "";
+            for(let index = 0;index < mainGVM.glyph.length;index++){
+                if(mainGVM.glyph[index] != 0o207){
+                    glyphString += "0" + mainGVM.glyph[index].toString(8) + ",";
+                }
+            }
+            document.getElementById("geometron-glyph-input").value = glyphString;
             setText();
   
     });
@@ -234,11 +240,17 @@ function keyPressed() {
     
     drawGlyph(geometronGlyphCanvas, mainGVM);
     spellGlyph(geometronSpellCanvas, spellGVM);
-
+    
     setText();
     saveHypercube(mainGVM);
     mainGVM.hypercube[mainGVM.address] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
-
+    let glyphString = "";
+    for(let index = 0;index < mainGVM.glyph.length;index++){
+        if(mainGVM.glyph[index] != 0o207){
+            glyphString += "0" + mainGVM.glyph[index].toString(8) + ",";
+        }
+    }
+    document.getElementById("geometron-glyph-input").value = glyphString;
 }
 
 
