@@ -264,12 +264,13 @@ window.addEventListener('DOMContentLoaded', () => {
         let importGlyph = [];
         let commaSplit = this.value.split(",");
         for(let index = 0;index < commaSplit.length;index++){
-            if(commaSplit[index].length > 0){
+            if(commaSplit[index].length > 1){
                 importGlyph.push(parseInt(commaSplit[index] ,8));
             }
         }
         mainGVM.hypercube[mainGVM.address] = importGlyph;
-        mainGVM.glyph = importGlyph.push(0o207);
+        importGlyph.push(0o207);
+        mainGVM.glyph = importGlyph;
         spellGVM.glyph = mainGVM.glyph; 
         drawGlyph(geometronGlyphCanvas, mainGVM);
         spellGlyph(geometronSpellCanvas, spellGVM);
