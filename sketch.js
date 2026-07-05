@@ -73,9 +73,6 @@ function draw(){
         audio_spectrum = fft.analyze();
         nyquistFreq = sampleRate() / 2;
         spectrum_bin_frequency = nyquistFreq / (audio_spectrum.length);
-        fill(255);
-        noStroke();     
-        rect(0, 0, width, height); 
         stroke(0);
         strokeWeight(1);
         noFill();
@@ -90,6 +87,10 @@ function draw(){
         strokeWeight(30);        
     }
    
+    fill(255);
+    noStroke();     
+    rect(0, 0, width, height); 
+
     let cellSize = 0.5*innerWidth/8;
     
     if(mouseX > 0 && mouseX < 0.5*width && mouseY > height - 2*cellSize && mouseY < height){
@@ -123,135 +124,155 @@ function mouseWheel(event) {
 }
 
 function keyPressed() {
-
-    if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
-        
-        fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
-        fileNameSVG = fileNameBase + ".svg";
-        mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
-        drawGlyph(geometronGlyphCanvas, mainGVM);
-        geometronJSON = {};
-        geometronJSON.canvas = mainGVM.canvas;
-        geometronJSON.style = mainGVM.style;
-        geometronJSON.cursor = mainGVM.cursor;
-        geometronJSON.glyph = mainGVM.glyph;
-
-        mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
-
-        data = encodeURIComponent(mainGVM.svgString);
-        fetch('save-file.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-            body: 'data=' + data + '&filename=' + fileNameSVG
-        });
-
-        mainGVM.glyph.push(0o207);
-        return false; 
-    }
-    if (key === 'Escape') {
-        console.log("Escape key was pressed!");
-    }
-    let actionKey = null;
-    if (key.length === 1) {
-        actionKey = key.charCodeAt(0);
-    } else {
-        // Map special keys to unique integers below 32
-        if (keyCode === BACKSPACE) actionKey = 0o10;  
-        if (keyCode === ENTER)     actionKey = 0o12; 
-        if (keyCode === LEFT_ARROW)  actionKey = 0o20;  
-        if (keyCode === RIGHT_ARROW) actionKey = 0o21;  
-        if (keyCode === UP_ARROW)    actionKey = 0o22;  
-        if (keyCode === DOWN_ARROW)  actionKey = 0o23;
-    }
+    if(document.activeElement != document.getElementById("geometron-glyph-input")){
+        if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
+            
+            fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
+            fileNameSVG = fileNameBase + ".svg";
+            mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+            drawGlyph(geometronGlyphCanvas, mainGVM);
+            geometronJSON = {};
+            geometronJSON.canvas = mainGVM.canvas;
+            geometronJSON.style = mainGVM.style;
+            geometronJSON.cursor = mainGVM.cursor;
+            geometronJSON.glyph = mainGVM.glyph;
     
-    if(actionKey >= 0o40 && actionKey < 0o177){
+            mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
+    
+            data = encodeURIComponent(mainGVM.svgString);
+            fetch('save-file.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                body: 'data=' + data + '&filename=' + fileNameSVG
+            });
+    
+            mainGVM.glyph.push(0o207);
+            return false; 
+        }
+        if (key === 'Escape') {
+            console.log("Escape key was pressed!");
+        }
+        let actionKey = null;
+        if (key.length === 1) {
+            actionKey = key.charCodeAt(0);
+        } else {
+            // Map special keys to unique integers below 32
+            if (keyCode === BACKSPACE) actionKey = 0o10;  
+            if (keyCode === ENTER)     actionKey = 0o12; 
+            if (keyCode === LEFT_ARROW)  actionKey = 0o20;  
+            if (keyCode === RIGHT_ARROW) actionKey = 0o21;  
+            if (keyCode === UP_ARROW)    actionKey = 0o22;  
+            if (keyCode === DOWN_ARROW)  actionKey = 0o23;
+        }
         
-        if(mainGVM.keyboard.mode === 0){
-            if(mainGVM.hypercube[actionKey][0] < 0o40){
-                rootMagic(mainGVM,mainGVM.hypercube[actionKey][0]);
-            } else{
+        if(actionKey >= 0o40 && actionKey < 0o177){
+            
+            if(mainGVM.keyboard.mode === 0){
+                if(mainGVM.hypercube[actionKey][0] < 0o40){
+                    rootMagic(mainGVM,mainGVM.hypercube[actionKey][0]);
+                } else{
+                    let oldGlyph = mainGVM.glyph;
+                    mainGVM.glyph = [];
+                    for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                        if(oldGlyph[glyphIndex] != 0o207){
+                            mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                        } else{
+                                mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
+                                mainGVM.glyph.push(0o207);
+                        }
+                    }
+                }            
+            }
+            if(mainGVM.keyboard.mode === 1){
                 let oldGlyph = mainGVM.glyph;
                 mainGVM.glyph = [];
                 for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
                     if(oldGlyph[glyphIndex] != 0o207){
                         mainGVM.glyph.push(oldGlyph[glyphIndex]);
                     } else{
-                            mainGVM.glyph.push(mainGVM.hypercube[actionKey][0]);
-                            mainGVM.glyph.push(0o207);
+                        mainGVM.glyph.push(actionKey + 0o1000);
+                        mainGVM.glyph.push(0o207);
                     }
                 }
-            }            
-        }
-        if(mainGVM.keyboard.mode === 1){
-            let oldGlyph = mainGVM.glyph;
-            mainGVM.glyph = [];
-            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
-                if(oldGlyph[glyphIndex] != 0o207){
-                    mainGVM.glyph.push(oldGlyph[glyphIndex]);
-                } else{
-                    mainGVM.glyph.push(actionKey + 0o1000);
-                    mainGVM.glyph.push(0o207);
+            }
+            if(mainGVM.keyboard.mode === 2){
+                let oldGlyph = mainGVM.glyph;
+                mainGVM.glyph = [];
+                for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
+                    if(oldGlyph[glyphIndex] != 0o207){
+                        mainGVM.glyph.push(oldGlyph[glyphIndex]);
+                    } else{
+                        mainGVM.glyph.push(actionKey);
+                        mainGVM.glyph.push(0o207);
+                    }
                 }
             }
         }
-        if(mainGVM.keyboard.mode === 2){
-            let oldGlyph = mainGVM.glyph;
-            mainGVM.glyph = [];
-            for(let glyphIndex = 0;glyphIndex < oldGlyph.length;glyphIndex++){
-                if(oldGlyph[glyphIndex] != 0o207){
-                    mainGVM.glyph.push(oldGlyph[glyphIndex]);
-                } else{
-                    mainGVM.glyph.push(actionKey);
-                    mainGVM.glyph.push(0o207);
-                }
+        if (actionKey === 0o10) {
+            //delete character before the cursor
+            rootMagic(mainGVM,0o10);
+        }
+        if (actionKey === 0o12) {
+            rootMagic(mainGVM,0o12);
+    
+            //ENTER key
+            //mode switch from shape to font to word        
+        }
+        if (actionKey === 0o20) {
+            //0o20 left arrow, cursor back
+            rootMagic(mainGVM,0o20);
+        }
+        if (actionKey === 0o21) {
+            //right arrow, cursor forward
+            rootMagic(mainGVM,0o21);
+        }
+        if (actionKey === 0o22) {
+            //up arrow, move up in hypercube
+            rootMagic(mainGVM,0o22);
+        }
+        if (actionKey === 0o23) {
+            //down arrow,move down in hypercube
+            rootMagic(mainGVM,0o23);
+        }
+        
+        spellGVM.glyph = mainGVM.glyph; 
+        
+        drawGlyph(geometronGlyphCanvas, mainGVM);
+        spellGlyph(geometronSpellCanvas, spellGVM);
+        
+        setText();
+        saveHypercube(mainGVM);
+        mainGVM.hypercube[mainGVM.address] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+        let glyphString = "";
+        for(let index = 0;index < mainGVM.glyph.length;index++){
+            if(mainGVM.glyph[index] != 0o207 && mainGVM.glyph[index] != null){
+                glyphString += "0" + mainGVM.glyph[index].toString(8) + ",";
             }
         }
+        document.getElementById("geometron-glyph-input").value = glyphString;
     }
-    if (actionKey === 0o10) {
-        //delete character before the cursor
-        rootMagic(mainGVM,0o10);
-    }
-    if (actionKey === 0o12) {
-        rootMagic(mainGVM,0o12);
-
-        //ENTER key
-        //mode switch from shape to font to word        
-    }
-    if (actionKey === 0o20) {
-        //0o20 left arrow, cursor back
-        rootMagic(mainGVM,0o20);
-    }
-    if (actionKey === 0o21) {
-        //right arrow, cursor forward
-        rootMagic(mainGVM,0o21);
-    }
-    if (actionKey === 0o22) {
-        //up arrow, move up in hypercube
-        rootMagic(mainGVM,0o22);
-    }
-    if (actionKey === 0o23) {
-        //down arrow,move down in hypercube
-        rootMagic(mainGVM,0o23);
-    }
-    
-    drawGlyph(geometronGlyphCanvas, mainGVM);
-    spellGVM.glyph = mainGVM.glyph; 
-    spellGlyph(geometronSpellCanvas, spellGVM);
-    
-    drawGlyph(geometronGlyphCanvas, mainGVM);
-    spellGlyph(geometronSpellCanvas, spellGVM);
-    
-    setText();
-    saveHypercube(mainGVM);
-    mainGVM.hypercube[mainGVM.address] = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
-    let glyphString = "";
-    for(let index = 0;index < mainGVM.glyph.length;index++){
-        if(mainGVM.glyph[index] != 0o207){
-            glyphString += "0" + mainGVM.glyph[index].toString(8) + ",";
-        }
-    }
-    document.getElementById("geometron-glyph-input").value = glyphString;
 }
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    // This code waits until the HTML is fully ready
+    document.getElementById("geometron-glyph-input").onchange = function(){
+
+        let importGlyph = [];
+        let commaSplit = this.value.split(",");
+        for(let index = 0;index < commaSplit.length;index++){
+            if(commaSplit[index].length > 0){
+                importGlyph.push(parseInt(commaSplit[index] ,8));
+            }
+        }
+        mainGVM.hypercube[mainGVM.address] = importGlyph;
+        mainGVM.glyph = importGlyph.push(0o207);
+        spellGVM.glyph = mainGVM.glyph; 
+        drawGlyph(geometronGlyphCanvas, mainGVM);
+        spellGlyph(geometronSpellCanvas, spellGVM);
+
+    };
+});
 
 
 function mouseClicked() {
