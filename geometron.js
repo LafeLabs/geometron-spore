@@ -90,6 +90,22 @@ function saveHypercube(gvm){
     });
 }
 
+function importShapeStack(gvm,shapeStack){
+    for(let shapeIndex = 0;shapeIndex < shapeStack.length;shapeIndex++){
+        if(shapeStack[shapeIndex].length > 1){
+            let glyphAddress = parseInt(shapeStack[shapeIndex].split(":")[0],8);
+            let glyph = [];
+            let glyphStringArray = shapeStack[shapeIndex].split(":")[1].split(",");
+            for(let actionIndex = 0;actionIndex < glyphStringArray.length;actionIndex++){
+                if(glyphStringArray[actionIndex].length > 1){
+                    glyph.push(parseInt(glyphStringArray[actionIndex],8));
+                }
+            }
+            gvm.hypercube[glyphAddress] = glyph;
+        }
+    }
+}
+
 function loadHyperCube(gvm,hypercube){
     for(let index = 0;index < hypercube.length;index++){
         gvm.hypercube[index] = hypercube[index];

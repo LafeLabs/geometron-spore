@@ -127,6 +127,7 @@ function keyPressed() {
     if(document.activeElement != document.getElementById("geometron-glyph-input")){
         if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
             
+            
             fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
             fileNameSVG = fileNameBase + ".svg";
             mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
@@ -137,6 +138,27 @@ function keyPressed() {
             geometronJSON.cursor = mainGVM.cursor;
             geometronJSON.glyph = mainGVM.glyph;
     
+            geometronJSON.shapeStack = [];
+            for(let shapeIndex = 0o220;shapeIndex < 0o240; shapeIndex++){
+                if(mainGVM.hypercube[shapeIndex].length > 0){
+                    let glyphString = "";
+                    glyphString += "0" + shapeIndex.toString(8) + ":";
+                    for(let actionIndex = 0;actionIndex < mainGVM.hypercube[shapeIndex].length;actionIndex++){
+                        glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8);
+                    }
+                    geometronJSON.shapeStack.push(glyphString);
+                }
+            }
+            for(let shapeIndex = 0o1220;shapeIndex < 0o1240; shapeIndex++){
+                if(mainGVM.hypercube[shapeIndex].length > 0){
+                    let glyphString = "";
+                    glyphString += "0" + shapeIndex.toString(8) + ":";
+                    for(let actionIndex = 0;actionIndex < mainGVM.hypercube[shapeIndex].length;actionIndex++){
+                        glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8);
+                    }
+                    geometronJSON.shapeStack.push(glyphString);
+                }
+            }    
             mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
     
             data = encodeURIComponent(mainGVM.svgString);
@@ -144,6 +166,13 @@ function keyPressed() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
                 body: 'data=' + data + '&filename=' + fileNameSVG
+            });
+            
+            data = encodeURIComponent(JSON.stringify(geometronJSON,null,"    "));
+            fetch('save-file.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                body: 'data=' + data + '&filename=geometron.json'
             });
     
             mainGVM.glyph.push(0o207);

@@ -4,6 +4,8 @@ $$ \gamma \epsilon \omega \mu \epsilon \tau \rho \omicron \nu $$
 
 A geometric meta-language.
 
+## [index.html](index.html)
+
 ## geometron core:
 
  - [geometron.html](geometron.html)

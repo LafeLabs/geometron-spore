@@ -29,7 +29,7 @@ function setup() {
             mainGVM.canvas.x0 = 0.5 * mainGVM.canvas.width; 
             mainGVM.canvas.y0 = 0.5 * mainGVM.canvas.height;
             mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
-            mainGVM.style.line0 = 3;
+            mainGVM.style.line0 = 2;
             mainGVM.hypercube = JSON.parse(rawJSON);
             
             for(let index = 0o277;index >= 0o220; index--){
