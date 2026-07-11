@@ -28,8 +28,8 @@ function setup() {
             mainGVM.canvas.height = mainGVM.canvas.width;
             mainGVM.canvas.x0 = 0.5 * mainGVM.canvas.width; 
             mainGVM.canvas.y0 = 0.5 * mainGVM.canvas.height;
-            mainGVM.canvas.unit = 0.1 * mainGVM.canvas.width; 
-            mainGVM.style.line0 = 3;
+            mainGVM.canvas.unit = 0.25 * mainGVM.canvas.width; 
+            mainGVM.style.line0 = 5;
             mainGVM.hypercube = JSON.parse(rawJSON);
             
             for(let index = 0o277;index >= 0o220; index--){
@@ -125,66 +125,65 @@ function mouseWheel(event) {
 
 function keyPressed() {
     if(document.activeElement != document.getElementById("geometron-glyph-input")){
-
-    if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
-                
-        fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
-        fileNameSVG = fileNameBase + ".svg";
-        mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
-        drawGlyph(geometronGlyphCanvas, mainGVM);
-        geometronJSON = {};
-        geometronJSON.canvas = mainGVM.canvas;
-        geometronJSON.style = mainGVM.style;
-        geometronJSON.cursor = mainGVM.cursor;
-        geometronJSON.glyph = mainGVM.glyph;
+        if ((keyIsDown(CONTROL) || keyIsDown(91)) && key === 's') {
+            
+            
+            fileNameBase = "geometron-glyph-" + Math.floor(Date.now() / 1000);
+            fileNameSVG = fileNameBase + ".svg";
+            mainGVM.glyph = mainGVM.glyph.filter(cursorCode => cursorCode !== 0o207);
+            drawGlyph(geometronGlyphCanvas, mainGVM);
+            geometronJSON = {};
+            geometronJSON.canvas = mainGVM.canvas;
+            geometronJSON.style = mainGVM.style;
+            geometronJSON.cursor = mainGVM.cursor;
+            geometronJSON.glyph = mainGVM.glyph;
     
-        geometronJSON.shapeStack = [];
-        for(let shapeIndex = 0o220; shapeIndex < 0o240; shapeIndex++){
-            if(mainGVM.hypercube[shapeIndex] && mainGVM.hypercube[shapeIndex].length > 0){
-                let glyphString = "";
-                glyphString += "0" + shapeIndex.toString(8) + ":";
-                for(let actionIndex = 0; actionIndex < mainGVM.hypercube[shapeIndex].length; actionIndex++){
-                    let actionValue = mainGVM.hypercube[shapeIndex][actionIndex];
-                    if (actionValue !== undefined && actionValue !== null) {
-                        glyphString += "0" + actionValue.toString(8) + ",";
+            geometronJSON.shapeStack = [];
+            for(let shapeIndex = 0o220;shapeIndex < 0o240; shapeIndex++){
+                if(mainGVM.hypercube[shapeIndex].length > 0){
+                    let glyphString = "";
+                    glyphString += "0" + shapeIndex.toString(8) + ":";
+                    for(let actionIndex = 0;actionIndex < mainGVM.hypercube[shapeIndex].length;actionIndex++){
+                        if(mainGVM.hypercube[shapeIndex][actionIndex]!= null){
+                            glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8) + ",";                            
+                        }
+
                     }
+                    geometronJSON.shapeStack.push(glyphString);
                 }
-                geometronJSON.shapeStack.push(glyphString);
             }
+            for(let shapeIndex = 0o1220;shapeIndex < 0o1240; shapeIndex++){
+                if(mainGVM.hypercube[shapeIndex].length > 0){
+                    let glyphString = "";
+                    glyphString += "0" + shapeIndex.toString(8) + ":";
+                    for(let actionIndex = 0;actionIndex < mainGVM.hypercube[shapeIndex].length;actionIndex++){
+                        
+                        if(mainGVM.hypercube[shapeIndex][actionIndex]!= null){
+                            glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8) + ",";                            
+                        }
+                    }
+                    geometronJSON.shapeStack.push(glyphString);
+                }
+            }    
+            mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
+    
+            data = encodeURIComponent(mainGVM.svgString);
+            fetch('save-file.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                body: 'data=' + data + '&filename=' + fileNameSVG
+            });
+            
+            data = encodeURIComponent(JSON.stringify(geometronJSON,null,"    "));
+            fetch('save-file.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                body: 'data=' + data + '&filename=geometron.json'
+            });
+    
+            mainGVM.glyph.push(0o207);
+            return false; 
         }
-        for(let shapeIndex = 0o1220; shapeIndex < 0o1240; shapeIndex++){
-            if(mainGVM.hypercube[shapeIndex] && mainGVM.hypercube[shapeIndex].length > 0){
-                let glyphString = "";
-                glyphString += "0" + shapeIndex.toString(8) + ":";
-                for(let actionIndex = 0; actionIndex < mainGVM.hypercube[shapeIndex].length; actionIndex++){
-                    let actionValue = mainGVM.hypercube[shapeIndex][actionIndex];
-                    if (actionValue !== undefined && actionValue !== null) {
-                        glyphString += "0" + actionValue.toString(8) + ",";
-                    }
-                }
-                geometronJSON.shapeStack.push(glyphString);
-            }
-        }    
-        mainGVM.svgString = mainGVM.svgString.split("<json>")[0] + "<json>" + JSON.stringify(geometronJSON,null,"  ") + "</json>" + mainGVM.svgString.split("</json>")[1];
-    
-        data = encodeURIComponent(mainGVM.svgString);
-        fetch('save-file.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-            body: 'data=' + data + '&filename=' + fileNameSVG
-        });
-        
-        data = encodeURIComponent(JSON.stringify(geometronJSON,null,"    "));
-        fetch('save-file.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-            body: 'data=' + data + '&filename=geometron.json'
-        });
-    
-        mainGVM.glyph.push(0o207);
-        return false; 
-    }
-
         if (key === 'Escape') {
             console.log("Escape key was pressed!");
         }
