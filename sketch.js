@@ -144,7 +144,7 @@ function keyPressed() {
                     let glyphString = "";
                     glyphString += "0" + shapeIndex.toString(8) + ":";
                     for(let actionIndex = 0;actionIndex < mainGVM.hypercube[shapeIndex].length;actionIndex++){
-                        glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8);
+                        glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8) + ",";
                     }
                     geometronJSON.shapeStack.push(glyphString);
                 }
@@ -154,7 +154,7 @@ function keyPressed() {
                     let glyphString = "";
                     glyphString += "0" + shapeIndex.toString(8) + ":";
                     for(let actionIndex = 0;actionIndex < mainGVM.hypercube[shapeIndex].length;actionIndex++){
-                        glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8);
+                        glyphString += "0" + mainGVM.hypercube[shapeIndex][actionIndex].toString(8) + ",";
                     }
                     geometronJSON.shapeStack.push(glyphString);
                 }
