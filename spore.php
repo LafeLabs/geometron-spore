@@ -7,9 +7,8 @@ $files = json_decode(file_get_contents($sporeUrl), true);
 
 foreach ($files as $file) {
     copy($file, $fork . "/" . $file);
-    @copy($baseUrl.$file,$File);
+    @copy($baseUrl.$file,$file);
 }
-
 
 ?>
 <a href = "index.html">index.html</a>
